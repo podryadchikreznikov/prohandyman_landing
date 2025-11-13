@@ -11,6 +11,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+*.zip
 
 # IntelliJ related
 *.iml
@@ -33,6 +34,25 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Python related
+__pycache__/
+*.py[cod]
+*$py.class
+.coverage
+.coverage.*
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.tox/
+.venv/
+venv/
+.env
+.env.*
+env/
+pip-wheel-metadata/
+dist/
+pythonProject_prohandyman/.idea/
+
 # Symbolication related
 app.*.symbols
 
@@ -43,3 +63,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Keep Obsidian knowledge base tracked
+!obsidian_prohandyman/**
