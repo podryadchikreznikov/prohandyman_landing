@@ -1,0 +1,76 @@
+<!-- smartcaptcha-popup.html -->
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>SmartCaptcha</title>
+    <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                sans-serif;
+        }
+
+        /* Контейнер можно скрыть, т.к. капча невидимая.
+         Но оставим минимальный размер для "подозрительных" кейсов,
+         когда всё-таки будет показано окно-челлендж. */
+        #captcha-container {
+            min-width: 280px;
+            min-height: 80px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="captcha-container" class="smart-captcha"
+        data-sitekey="ysc1_JMJcAAfPce436nv20qcDpdMChASo4m5y2phUgeFLbfc3400a" data-invisible="true"
+        data-callback="onCaptchaSuccess"></div>
+
+    <script>
+        // callback, который SmartCaptcha вызовет при успешной проверке
+        function onCaptchaSuccess(token) {
+            try {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage(
+                        {
+                            type: "smartcaptcha-token",
+                            token: token,
+                        },
+                        "*"
+                    );
+                }
+            } catch (e) {
+                console.error("Ошибка при postMessage в окно-родителя:", e);
+            } finally {
+                // Закрываем попап после передачи токена
+                window.close();
+            }
+        }
+
+        // Запускаем невидимую капчу сразу после загрузки страницы
+        window.addEventListener("load", function () {
+            // ya.smartCaptcha.execute принимает id контейнера
+            // См. доку SmartCaptcha для актуальных сигнатур.
+            if (window.ya && ya.smartCaptcha) {
+                try {
+                    ya.smartCaptcha.execute("captcha-container");
+                } catch (e) {
+                    console.error("Не удалось выполнить SmartCaptcha:", e);
+                }
+            } else {
+                console.error("SmartCaptcha не инициализирована (нет ya.smartCaptcha).");
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+name: prohandyman_landing
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  auto_route: 10.1.0+1
+  card_loading: ^0.3.2
+  collection: ^1.18.0
+  dartz: ^0.10.1
+  dio: ^5.8.0+1
+  equatable: ^2.0.7
+  extended_text: ^15.0.2
+  extended_text_field: ^16.0.2
+  file_picker: ^8.1.6
+  file_saver: ^0.3.0
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.1
+  flutter_quill: ^11.4.1
+  flutter_quill_extensions: ^11.0.0
+  flutter_staggered_grid_view: ^0.7.0
+  flutter_switch: ^0.3.2
+  flutter_tts: ^3.6.3
+  get_it: ^8.0.3
+  intl: ^0.20.2
+  logger: ^2.5.0
+  mime: ^2.0.0
+  flutter_flip_card: ^0.0.6
+  meta: ^1.16.0
+  responsive_builder: ^0.7.1
+  shared_preferences: ^2.5.3
+  table_calendar: ^3.2.0
+  talker: ^4.9.3
+  talker_bloc_logger: ^4.9.3
+  talker_dio_logger: ^4.9.3
+  talker_flutter: ^4.9.3
+  translit: ^2.0.2
+  package_info_plus: ^8.0.0
+  xml: ^6.5.0
+  path_provider: ^2.1.5
+  permission_handler: ^11.3.1
+
+dev_dependencies:
+  auto_route_generator: 10.1.0
+  build_runner: ^2.4.15
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.1
+
+dependency_overrides:
+  uuid: ^4.5.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/prohandyman-logo-png.png
+    - assets/pattern.png

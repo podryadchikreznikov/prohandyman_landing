@@ -1,0 +1,9 @@
+ydb[yc]
+requests
+bcrypt
+PyJWT[crypto]
+pytz
+boto3
+reportlab
+yandexcloud
+grpcio

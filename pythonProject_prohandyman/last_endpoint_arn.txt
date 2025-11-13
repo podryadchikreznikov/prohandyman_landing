@@ -1,0 +1,1 @@
+arn:aws:sns::b1g2bgg0i9r8beucbthc:endpoint/WEB/balansoved-web-notifications/15f463b8d8957a8b1591ac291c3b53916717d143ce969888922b9ef8c352d9dd

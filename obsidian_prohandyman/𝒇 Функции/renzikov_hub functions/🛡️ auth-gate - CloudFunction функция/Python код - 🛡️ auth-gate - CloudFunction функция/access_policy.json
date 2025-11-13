@@ -1,0 +1,12 @@
+{
+  "default": { "allow_if_not_listed": true },
+  "rules": [
+    {"host": "*", "path": "/firms/*/employees/invite", "method": "POST", "allowed_roles_any": ["OWNER", "ADMIN"]},
+    {"host": "*", "path": "/firms/*/employees/edit", "method": "POST", "allowed_roles_any": ["OWNER", "ADMIN"]},
+    {"host": "*", "path": "/firms/*/employees/delete", "method": "POST", "allowed_roles_any": ["OWNER", "ADMIN"]},
+    {"host": "*", "path": "/firms/*/delete", "method": "POST", "allowed_roles_any": ["OWNER"]},
+    {"host": "*", "path": "/firms/*/employees", "method": "GET", "allowed_roles_any": ["OWNER", "ADMIN", "MANAGER", "SENIOR_FOREMAN", "FOREMAN", "DISPATCHER", "ACCOUNTANT", "EMPLOYEE"]},
+    {"host": "*", "path": "/firms/*/tariffs/manage", "method": "POST", "allowed_roles_any": ["OWNER", "ADMIN", "MANAGER", "SENIOR_FOREMAN", "FOREMAN", "DISPATCHER", "ACCOUNTANT", "EMPLOYEE"]},
+    {"host": "*", "path": "/firms/*/integrations", "method": "POST", "allowed_roles_any": ["OWNER", "ADMIN", "MANAGER", "SENIOR_FOREMAN", "FOREMAN", "DISPATCHER", "ACCOUNTANT", "EMPLOYEE"]}
+  ]
+}
