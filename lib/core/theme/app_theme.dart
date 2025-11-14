@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app_theme_tokens.dart';
 import 'extensions/landing_header_theme.dart';
+import 'extensions/landing_carousel_theme.dart';
 
 /// Central point for overriding default Material component styles.
 ///
@@ -45,6 +46,10 @@ abstract class AppTheme {
       appBarTheme: _buildAppBarTheme(colorScheme: colorScheme),
       extensions: [
         LandingHeaderTheme.fromScheme(
+          colorScheme: colorScheme,
+          textTheme: baseTextTheme,
+        ),
+        LandingCarouselTheme.fromScheme(
           colorScheme: colorScheme,
           textTheme: baseTextTheme,
         ),

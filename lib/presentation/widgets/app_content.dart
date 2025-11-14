@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:prohandyman_landing/core/theme/app_theme.dart';
@@ -12,7 +13,10 @@ class AppContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = sl<AppRouter>();
 
+    final showOverlay = !kIsWeb;
+
     return MaterialApp.router(
+      showPerformanceOverlay: showOverlay,
       debugShowCheckedModeBanner: false,
       title: 'Renzikov Hub',
       themeMode: ThemeMode.system,

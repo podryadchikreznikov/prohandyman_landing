@@ -5,19 +5,47 @@ import tkinter as tk
 from tkinter import scrolledtext, messagebox
 from botocore.exceptions import ClientError
 import os
+from typing import Dict
 
 # -------------------------------------------
 # ▼▼▼ КОНФИГУРАЦИЯ ▼▼▼
 # -------------------------------------------
-YC_KEY_ID = os.getenv("YC_KEY_ID", "")
-YC_SECRET_KEY = os.getenv("YC_SECRET_KEY", "")
-PLATFORM_APP_ARN = "arn:aws:sns::b1g2bgg0i9r8beucbthc:app/WEB/balansoved-web-notifications"
+YC_KEY_ID_ENV = "YC_KEY_ID"
+YC_SECRET_KEY_ENV = "YC_SECRET_KEY"
+PLATFORM_APP_ARN_ENV = "YC_PLATFORM_APP_ARN"
 NOTIF_TITLE = "Финальная отправка"
 NOTIF_BODY = "Этот push был отправлен с использованием корректной логики ПЕРЕСОЗДАНИЯ эндпоинта. ✅"
 YC_ENDPOINT_URL = "https://notifications.yandexcloud.net"
 YC_REGION = "ru-central1"
 PUSH_SUB_SAVE_FILE = "last_push_subscription.json"
 ENDPOINT_ARN_SAVE_FILE = "last_endpoint_arn.txt"
+
+# -------------------------------------------
+# ▼▼▼ ЗАГРУЗКА СЕКРЕТОВ ИЗ ОКРУЖЕНИЯ ▼▼▼
+# -------------------------------------------
+
+
+def _load_yc_credentials() -> Dict[str, str]:
+    """Загружает реквизиты Yandex Cloud из переменных окружения."""
+    required = {
+        YC_KEY_ID_ENV: "Yandex Cloud access key ID",
+        YC_SECRET_KEY_ENV: "Yandex Cloud secret access key",
+        PLATFORM_APP_ARN_ENV: "Yandex Cloud platform application ARN",
+    }
+    missing = [env for env in required if not os.environ.get(env)]
+    if missing:
+        missing_vars = ", ".join(missing)
+        raise RuntimeError(
+            f"Отсутствуют обязательные переменные окружения: {missing_vars}. "
+            f"Добавьте их в .env (не коммить) или экспортируйте перед запуском."
+        )
+
+    return {
+        "access_key_id": os.environ[YC_KEY_ID_ENV],
+        "secret_access_key": os.environ[YC_SECRET_KEY_ENV],
+        "platform_app_arn": os.environ[PLATFORM_APP_ARN_ENV],
+    }
+
 
 
 # -------------------------------------------
@@ -90,12 +118,20 @@ def process_and_send(push_subscription_json: str):
         messagebox.showerror("Ошибка", "Введенный текст не является корректным JSON.")
         return
 
+    try:
+        creds = _load_yc_credentials()
+    except RuntimeError as cred_error:
+        messagebox.showerror("Нет доступа",
+                             f"{cred_error}\n\n"
+                             "Пример: export YC_KEY_ID=... && export YC_SECRET_KEY=...")
+        return
+
     client = boto3.client(
         "sns",
         region_name=YC_REGION,
         endpoint_url=YC_ENDPOINT_URL,
-        aws_access_key_id=YC_KEY_ID,
-        aws_secret_access_key=YC_SECRET_KEY,
+        aws_access_key_id=creds["access_key_id"],
+        aws_secret_access_key=creds["secret_access_key"],
         verify=False
     )
 
@@ -140,7 +176,7 @@ def process_and_send(push_subscription_json: str):
             print(f"\n--- ШАГ 1А: Создание нового эндпоинта ---")
             print(f"→ Запрос CreatePlatformEndpoint...")
             response_create = client.create_platform_endpoint(
-                PlatformApplicationArn=PLATFORM_APP_ARN,
+                PlatformApplicationArn=creds["platform_app_arn"],
                 Token=push_subscription_json,
             )
             endpoint_arn = response_create["EndpointArn"]
