@@ -37,7 +37,16 @@ abstract class AppThemeTokens {
   static const double headerTitleFontSize = 20;
   static const double headerSubtitleFontSize = 12;
   static const double headerColumnsGap = 32;
+  static const double landingNavBarHeight = 56;
+  static const double landingNavBarVerticalPadding = 4;
   static const Color carouselOverlayStart = Color(0xCC000000);
   static const Color carouselOverlayEnd = Color(0x00000000);
   static const Color carouselArrowBackground = Color(0x33000000);
+  static const double textBodySize = 16;
+  static const double textBodyLongSize = 14;
+  static const double textHeadingMediumSize = 22;
+  static const double textHeadingHeroSize = 38;
+  static const double textHeadingHeroWeight = 300;
+  static const Color serviceQuoteBackground = Color(0xFFF4F4F4);
+  static const Color serviceQuoteBorder = brandPrimary;
 }

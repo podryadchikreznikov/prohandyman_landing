@@ -46,8 +46,16 @@ class _LandingHeaderShell extends StatelessWidget {
                       width: double.infinity,
                       height: headerTheme.navBarHeight,
                       color: headerTheme.navBackgroundColor,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                      padding: EdgeInsets.symmetric(
+                        vertical: AppThemeTokens.landingNavBarVerticalPadding,
+                      ),
+                      child: SizedBox(
+                        height:
+                            (headerTheme.navBarHeight -
+                                    AppThemeTokens
+                                            .landingNavBarVerticalPadding *
+                                        2)
+                                .clamp(0.0, double.infinity),
                         child: navWidget,
                       ),
                     ),
@@ -320,8 +328,12 @@ class _NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final navContentHeight =
+        (theme.navBarHeight - AppThemeTokens.landingNavBarVerticalPadding * 2)
+            .clamp(0.0, double.infinity);
+
     return SizedBox(
-      height: theme.navBarHeight,
+      height: navContentHeight,
       child: Row(
         children: [
           Expanded(
@@ -398,8 +410,7 @@ class _CompactNavigationMenu extends StatelessWidget {
     final baseTextStyle = theme.navItemTextStyle.copyWith(color: menuTextColor);
     final borderColor = menuTextColor.withOpacity(0.6);
     final popupBackgroundColor = Theme.of(context).colorScheme.primary;
-    final popupTextStyle =
-        theme.navItemTextStyle.copyWith(color: Colors.white);
+    final popupTextStyle = theme.navItemTextStyle.copyWith(color: Colors.white);
 
     final popupButton = Theme(
       data: Theme.of(context).copyWith(
@@ -409,7 +420,7 @@ class _CompactNavigationMenu extends StatelessWidget {
         ),
       ),
       child: PopupMenuButton<String>(
-        tooltip: '\u041c\u0435\u043d\u044e',
+        tooltip: 'Меню',
         onSelected: (_) {},
         position: PopupMenuPosition.under,
         itemBuilder: (context) => [
@@ -429,12 +440,9 @@ class _CompactNavigationMenu extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('\u041c\u0435\u043d\u044e', style: baseTextStyle),
+              Text('Меню', style: baseTextStyle),
               const SizedBox(width: 4),
-              Icon(
-                Icons.arrow_drop_down,
-                color: baseTextStyle.color,
-              ),
+              Icon(Icons.arrow_drop_down, color: baseTextStyle.color),
             ],
           ),
         ),
@@ -447,7 +455,7 @@ class _CompactNavigationMenu extends StatelessWidget {
         onPressed: () {},
         style: theme.navCallToActionStyle,
         child: Text(
-          '\u0417\u0430\u043a\u0430\u0437\u0430\u0442\u044c \u0437\u0432\u043e\u043d\u043e\u043a',
+          'Заказать звонок',
           style: theme.navCallToActionTextStyle,
           textAlign: TextAlign.center,
         ),
@@ -459,17 +467,11 @@ class _CompactNavigationMenu extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: popupButton,
-            ),
+            child: Align(alignment: Alignment.centerLeft, child: popupButton),
           ),
           const SizedBox(width: 12),
           Flexible(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: callToAction,
-            ),
+            child: Align(alignment: Alignment.centerRight, child: callToAction),
           ),
         ],
       ),
@@ -478,12 +480,12 @@ class _CompactNavigationMenu extends StatelessWidget {
 }
 
 const _navItems = <String>[
-  '\u0413\u043b\u0430\u0432\u043d\u0430\u044f',
-  '\u0423\u0441\u043b\u0443\u0433\u0438',
-  '\u0426\u0435\u043d\u044b',
-  '\u041d\u043e\u0432\u043e\u0441\u0442\u0438',
-  '\u041e \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u0438',
-  '\u041a\u043e\u043d\u0442\u0430\u043a\u0442\u044b',
+  'Главная',
+  'Услуги',
+  'Цены',
+  'Новости',
+  'О компании',
+  'Контакты',
 ];
 
 const _headerInfoItems = <(IconData, String)>[

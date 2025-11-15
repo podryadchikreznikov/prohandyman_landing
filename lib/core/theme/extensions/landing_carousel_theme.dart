@@ -41,14 +41,13 @@ class LandingCarouselTheme extends ThemeExtension<LandingCarouselTheme> {
           AppThemeTokens.carouselOverlayEnd,
         ],
       ),
-      titleTextStyle: (textTheme.headlineSmall ?? const TextStyle()).copyWith(
+      titleTextStyle: (textTheme.titleMedium ?? const TextStyle()).copyWith(
         color: AppThemeTokens.textLight,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 0.6,
+        fontWeight: FontWeight.w600,
       ),
-      subtitleTextStyle: (textTheme.titleMedium ?? const TextStyle()).copyWith(
+      subtitleTextStyle: (textTheme.bodyMedium ?? const TextStyle()).copyWith(
         color: AppThemeTokens.textLightMuted,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
       ),
       contentPadding: const EdgeInsets.fromLTRB(32, 32, 32, 40),
       indicatorActiveColor: AppThemeTokens.textLight,

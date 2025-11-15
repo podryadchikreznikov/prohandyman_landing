@@ -3,6 +3,17 @@ class AppConfig {
   /// Base URL for all REST calls - replace with environment specific hosts.
   static const String apiBaseUrl = 'https://api.your-backend.dev';
 
+  /// Public endpoint for the callback request gateway API.
+  static const String callbackRequestApiBaseUrl =
+      'https://d5dii40lrt3h821egn3i.fary004x.apigw.yandexcloud.net';
+
+  /// Absolute path for the callback request submission.
+  static const String callbackRequestPath = '/callback/request';
+
+  /// Client key for Yandex SmartCaptcha. Keep in sync with Yandex Cloud.
+  static const String smartCaptchaSiteKey =
+      'ysc1_JMJcAAfPce436nv20qcDpdMChASo4m5y2phUgeFLbfc3400a';
+
   /// Generic timeout applied to HTTP clients.
   static const Duration defaultTimeout = Duration(seconds: 30);
 }

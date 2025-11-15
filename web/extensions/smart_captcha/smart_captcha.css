@@ -1,0 +1,21 @@
+/* Overlay that dims the entire page when SmartCaptcha challenge is active */
+#smartcaptcha-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 99999;
+}
+
+/*
+ * Container for the SmartCaptcha widget itself.
+ * ВАЖНО:
+ * - никаких фона, паддингов, min-width и теней;
+ * - чтобы при невидимой капче и отсутствии реального челенджа
+ *   не появлялся пустой белый квадрат.
+ */
+#smartcaptcha-container {
+  display: inline-block;
+}

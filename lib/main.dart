@@ -1,9 +1,10 @@
-import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:talker/talker.dart';
 
+import 'core/constants/constants.dart';
+import 'core/frontend_error/frontend_error_service.dart';
+import 'core/smart_captcha/smart_captcha_service.dart';
 import 'injection_container.dart';
 import 'presentation/widgets/app_content.dart';
 
@@ -11,6 +12,18 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _enableTimelineProfilingFlags();
   await setupLocator();
+
+  if (kIsWeb) {
+    final captchaService = sl<SmartCaptchaService>();
+    if (captchaService.isSupported && !captchaService.isInitialized) {
+      await captchaService.init(siteKey: AppConfig.smartCaptchaSiteKey);
+    }
+
+    final frontendErrorService = sl<FrontendErrorService>();
+    if (frontendErrorService.isSupported) {
+      frontendErrorService.start();
+    }
+  }
 
   FlutterError.onError = (details) {
     sl<Talker>().handle(details.exception, details.stack);

@@ -1,10 +1,7 @@
 part of 'landing_home_header.dart';
 
 class _LandingHomeHeaderCompact {
-  static Widget buildBody(
-    LandingHeaderTheme theme,
-    double contentWidth,
-  ) {
+  static Widget buildBody(LandingHeaderTheme theme, double contentWidth) {
     final height = headerHeight(contentWidth, theme);
     return SizedBox(
       height: height,
@@ -12,10 +9,7 @@ class _LandingHomeHeaderCompact {
     );
   }
 
-  static double headerHeight(
-    double contentWidth,
-    LandingHeaderTheme theme,
-  ) {
+  static double headerHeight(double contentWidth, LandingHeaderTheme theme) {
     final estimated = _estimateStackedHeaderHeight(contentWidth, theme);
     return math.max(AppThemeTokens.landingHeaderHeight, estimated);
   }
@@ -28,8 +22,7 @@ class _LandingHomeHeaderCompact {
     const double spacingBetweenSections = 16;
     const double compactCompanyHeight = 56;
 
-    final contactsHeight =
-        _estimateContactWrapHeight(contentWidth, theme);
+    final contactsHeight = _estimateContactWrapHeight(contentWidth, theme);
     return verticalPadding +
         compactCompanyHeight +
         spacingBetweenSections +
@@ -45,12 +38,7 @@ class _LandingHomeHeaderCompact {
     }
 
     final blockWidths = _headerInfoItems
-        .map(
-          (item) => _estimateInfoBlockWidth(
-            text: item.$2,
-            theme: theme,
-          ),
-        )
+        .map((item) => _estimateInfoBlockWidth(text: item.$2, theme: theme))
         .toList();
 
     double currentRowWidth = 0;
@@ -80,8 +68,7 @@ class _LandingHomeHeaderCompact {
   static double _contactWrapRowHeight(LandingHeaderTheme theme) {
     final padding = theme.infoPadding.resolve(TextDirection.ltr);
     final textStyle = theme.headerInfoTextStyle;
-    final textHeight = (textStyle.fontSize ?? 14) *
-        (textStyle.height ?? 1.0);
+    final textHeight = (textStyle.fontSize ?? 14) * (textStyle.height ?? 1.0);
     final contentHeight = textHeight > 20 ? textHeight : 20;
     return padding.vertical + contentHeight;
   }

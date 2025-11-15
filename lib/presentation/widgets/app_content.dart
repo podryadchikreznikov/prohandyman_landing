@@ -19,7 +19,7 @@ class AppContent extends StatelessWidget {
       showPerformanceOverlay: showOverlay,
       debugShowCheckedModeBanner: false,
       title: 'Renzikov Hub',
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       // Global theme overrides: tweak default Material widgets (AppBar, etc.)
       // instead of styling each feature manually.
       theme: AppTheme.light(),

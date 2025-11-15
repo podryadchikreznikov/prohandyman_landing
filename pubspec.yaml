@@ -41,8 +41,10 @@ dependencies:
   talker_bloc_logger: ^4.9.3
   talker_dio_logger: ^4.9.3
   talker_flutter: ^4.9.3
+  url_launcher: ^6.3.0
   translit: ^2.0.2
   xml: ^6.5.0
+  uuid: ^4.5.1
 
 dev_dependencies:
   auto_route_generator: 10.1.0
@@ -61,3 +63,6 @@ flutter:
     - assets/prohandyman-logo-png.png
     - assets/pattern.png
     - assets/slides/
+    - assets/repair_categories/
+    - assets/service_center_hero.jpg
+    - assets/service_form_hero.jpg

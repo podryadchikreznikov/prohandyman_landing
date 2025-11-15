@@ -48,7 +48,7 @@ class LandingHeaderTheme extends ThemeExtension<LandingHeaderTheme> {
       fontSize: AppThemeTokens.headerSubtitleFontSize,
       letterSpacing: 0.2,
     );
-    final infoStyle = (textTheme.bodyMedium ?? const TextStyle()).copyWith(
+    final infoStyle = (textTheme.bodySmall ?? const TextStyle()).copyWith(
       color: AppThemeTokens.headerTextColor,
     );
     final ctaTextStyle = (textTheme.labelLarge ?? const TextStyle()).copyWith(
@@ -83,18 +83,15 @@ class LandingHeaderTheme extends ThemeExtension<LandingHeaderTheme> {
       ),
       headerBackgroundColor: AppThemeTokens.backgroundLight,
       navBackgroundColor: colorScheme.primary,
-      navBarHeight: 48,
-      navItemTextStyle: (textTheme.titleMedium ?? const TextStyle()).copyWith(
+      navBarHeight: AppThemeTokens.landingNavBarHeight,
+      navItemTextStyle: (textTheme.bodyMedium ?? const TextStyle()).copyWith(
         color: onPrimary,
         fontWeight: FontWeight.w500,
       ),
-      navItemPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      navItemPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       navItemGap: 8,
-      navCallToActionTextStyle: (textTheme.labelLarge ?? const TextStyle())
-          .copyWith(
-            color: onPrimary,
-            fontWeight: FontWeight.w600,
-          ),
+      navCallToActionTextStyle: (textTheme.bodyMedium ?? const TextStyle())
+          .copyWith(color: onPrimary, fontWeight: FontWeight.w600),
       navCallToActionStyle: OutlinedButton.styleFrom(
         foregroundColor: onPrimary,
         backgroundColor: Colors.transparent,
