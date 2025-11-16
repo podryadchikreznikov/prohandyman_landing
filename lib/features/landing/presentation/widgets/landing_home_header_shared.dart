@@ -346,7 +346,7 @@ class _NavBar extends StatelessWidget {
                     Padding(
                       padding: theme.navItemPadding,
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () => _handleHeaderNavTap(context, label),
                         borderRadius: BorderRadius.circular(4),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -378,7 +378,7 @@ class _NavBar extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () => _navigateToContacts(context),
               style: theme.navCallToActionStyle,
               child: Text(
                 'ЗАКАЗАТЬ ЗВОНОК',
@@ -421,7 +421,7 @@ class _CompactNavigationMenu extends StatelessWidget {
       ),
       child: PopupMenuButton<String>(
         tooltip: 'Меню',
-        onSelected: (_) {},
+        onSelected: (value) => _handleHeaderNavTap(context, value),
         position: PopupMenuPosition.under,
         itemBuilder: (context) => [
           for (final label in _navItems)
@@ -452,7 +452,7 @@ class _CompactNavigationMenu extends StatelessWidget {
     final callToAction = SizedBox(
       height: double.infinity,
       child: OutlinedButton(
-        onPressed: () {},
+        onPressed: () => _navigateToContacts(context),
         style: theme.navCallToActionStyle,
         child: Text(
           'Заказать звонок',
@@ -494,3 +494,22 @@ const _headerInfoItems = <(IconData, String)>[
   (Icons.phone_in_talk_outlined, '+7 (999) 497-85-32'),
   (Icons.phone_in_talk_outlined, '+7 (343) 521-55-09'),
 ];
+
+void _handleHeaderNavTap(BuildContext context, String label) {
+  final router = AutoRouter.of(context);
+
+  switch (label) {
+    case 'Главная':
+      router.pushNamed(RoutePaths.root);
+      break;
+    case 'Контакты':
+      router.pushNamed(RoutePaths.contacts);
+      break;
+    default:
+      break;
+  }
+}
+
+void _navigateToContacts(BuildContext context) {
+  AutoRouter.of(context).pushNamed(RoutePaths.contacts);
+}

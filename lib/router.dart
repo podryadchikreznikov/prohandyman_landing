@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 
 import 'core/constants/constants.dart';
+import 'features/landing/presentation/pages/landing_contacts_page.dart';
 import 'features/landing/presentation/pages/landing_home_page.dart';
 import 'presentation/pages/auth_placeholder_page.dart';
 import 'presentation/pages/empty_router_page.dart';
@@ -21,6 +22,10 @@ class AppRouter extends RootStackRouter {
           page: LandingHomeRoute.page,
           path: RoutePaths.root,
           initial: true,
+        ),
+        AutoRoute(
+          page: LandingContactsRoute.page,
+          path: RoutePaths.contacts,
         ),
         AutoRoute(
           page: AuthPlaceholderRoute.page,

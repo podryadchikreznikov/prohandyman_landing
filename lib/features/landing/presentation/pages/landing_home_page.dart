@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:prohandyman_landing/core/theme/app_theme_tokens.dart';
 import 'package:prohandyman_landing/core/theme/extensions/landing_header_theme.dart';
+import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_footer.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_home_body.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_home_header.dart';
 
@@ -122,15 +123,13 @@ class _LandingHomePageState extends State<LandingHomePage> {
               children: [
                 SingleChildScrollView(
                   controller: _scrollController,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 5000),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: headerVisibleHeight),
-                        const LandingHomeBody(),
-                      ],
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(height: headerVisibleHeight),
+                      const LandingHomeBody(),
+                      const LandingFooter(),
+                    ],
                   ),
                 ),
                 Positioned(

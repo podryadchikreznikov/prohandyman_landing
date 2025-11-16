@@ -37,4 +37,5 @@ class RoutePaths {
   static const String notifications = '/notifications';
   static const String settings = '/settings';
   static const String tests = '/tests';
+  static const String contacts = '/contacts';
 }
