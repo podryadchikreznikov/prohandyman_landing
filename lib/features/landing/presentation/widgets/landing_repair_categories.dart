@@ -3,42 +3,20 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:prohandyman_landing/core/theme/app_theme_tokens.dart';
+import 'package:prohandyman_landing/presentation/widgets/tilt_wrapper.dart';
 
-const double _sectionSpacing = 24.0;
-const double _carouselAspectRatio = 16 / 9;
-const Duration _carouselAutoPlayInterval = Duration(seconds: 10);
-
-const _repairCategories = <_RepairCategory>[
-  _RepairCategory(
-    title: 'Стиральные машины',
-    assetPath: 'assets/repair_categories/washing_machine.jpg',
-    semanticsLabel: 'Белая стиральная машина в интерьере.',
-  ),
-  _RepairCategory(
-    title: 'Посудомоечные машины',
-    assetPath: 'assets/repair_categories/dishwasher.jpg',
-    semanticsLabel: 'Современная посудомоечная машина на кухне.',
-  ),
-  _RepairCategory(
-    title: 'Варочные панели и духовые шкафы',
-    assetPath: 'assets/repair_categories/oven.jpg',
-    semanticsLabel: 'Встроенная духовка и варочная панель на кухне.',
-  ),
-  _RepairCategory(
-    title: 'Холодильники',
-    assetPath: 'assets/repair_categories/refrigerator.jpg',
-    semanticsLabel: 'Открытый холодильник с продуктами.',
-  ),
-  _RepairCategory(
-    title: 'Водонагреватели',
-    assetPath: 'assets/repair_categories/water_heater.jpg',
-    semanticsLabel: 'Настенный водонагреватель в ванной комнате.',
-  ),
-];
+import 'landing_repair_categories/repair_category_card.dart';
+import 'landing_repair_categories/repair_category_mobile_slide.dart';
+import 'landing_repair_categories/repair_category_models.dart';
 
 /// Section that showcases the primary appliance categories we repair.
 class LandingRepairCategories extends StatefulWidget {
-  const LandingRepairCategories({super.key});
+  const LandingRepairCategories({
+    super.key,
+    this.onInnerScrollLockChanged,
+  });
+
+  final ValueChanged<bool>? onInnerScrollLockChanged;
 
   @override
   State<LandingRepairCategories> createState() =>
@@ -81,11 +59,11 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'МЫ РЕМОНТИРУЕМ',
+                  'НАШИ УСЛУГИ',
                   textAlign: TextAlign.center,
                   style: headingStyle,
                 ),
-                const SizedBox(height: _sectionSpacing),
+                const SizedBox(height: sectionSpacing),
                 LayoutBuilder(
                   builder: (context, constraints) {
                     final availableWidth = constraints.maxWidth.isFinite
@@ -103,23 +81,27 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
                     );
 
                     return Wrap(
-                      spacing: _sectionSpacing,
-                      runSpacing: _sectionSpacing,
+                      spacing: sectionSpacing,
+                      runSpacing: sectionSpacing,
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.start,
                       crossAxisAlignment: WrapCrossAlignment.start,
                       children: [
-                        for (var i = 0; i < _repairCategories.length; i++)
+                        for (var i = 0; i < repairCategories.length; i++)
                           SizedBox(
                             width: _resolveItemWidthForIndex(
                               availableWidth: availableWidth,
                               columns: columns,
                               index: i,
                               baseItemWidth: baseItemWidth,
-                              itemCount: _repairCategories.length,
+                              itemCount: repairCategories.length,
                             ),
-                            child: _RepairCategoryCard(
-                              category: _repairCategories[i],
+                            child: TiltWrapper(
+                              child: RepairCategoryCard(
+                                category: repairCategories[i],
+                                onScrollLockChanged:
+                                    widget.onInnerScrollLockChanged,
+                              ),
                             ),
                           ),
                       ],
@@ -138,12 +120,12 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
     return Column(
       children: [
         AspectRatio(
-          aspectRatio: _carouselAspectRatio,
+          aspectRatio: carouselAspectRatio,
           child: Stack(
             children: [
               PageView.builder(
                 controller: _pageController,
-                itemCount: _repairCategories.length,
+                itemCount: repairCategories.length,
                 onPageChanged: (index) {
                   if (_currentIndex != index) {
                     setState(() => _currentIndex = index);
@@ -152,8 +134,11 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
                 },
                 itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: _MobileCategorySlide(
-                    category: _repairCategories[index],
+                  child: TiltWrapper(
+                    child: RepairCategoryMobileSlide(
+                      category: repairCategories[index],
+                      onScrollLockChanged: widget.onInnerScrollLockChanged,
+                    ),
                   ),
                 ),
               ),
@@ -199,7 +184,7 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
   void _startAutoPlayTimer() {
     _autoPlayTimer?.cancel();
     _autoPlayTimer = Timer.periodic(
-      _carouselAutoPlayInterval,
+      carouselAutoPlayInterval,
       (_) => _goToNextSlide(),
     );
   }
@@ -219,7 +204,7 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
     if (!_carouselActive || !_pageController.hasClients) {
       return;
     }
-    final nextIndex = (_currentIndex + 1) % _repairCategories.length;
+    final nextIndex = (_currentIndex + 1) % repairCategories.length;
     _pageController.animateToPage(
       nextIndex,
       duration: const Duration(milliseconds: 400),
@@ -232,7 +217,7 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
     if (!_pageController.hasClients) {
       return;
     }
-    final length = _repairCategories.length;
+    final length = repairCategories.length;
     final targetIndex = (_currentIndex + delta + length) % length;
     _pageController.animateToPage(
       targetIndex,
@@ -258,7 +243,7 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
       return width;
     }
 
-    final totalSpacing = _sectionSpacing * (columns - 1);
+    final totalSpacing = sectionSpacing * (columns - 1);
     final computedWidth = (width - totalSpacing) / columns;
     return math.max(0, computedWidth);
   }
@@ -273,138 +258,12 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
     // Для макета из 5 карточек на широких экранах:
     // первая строка — 3 колонки, вторая — 2 растянутые карточки.
     if (columns == 3 && itemCount == 5 && index >= 3) {
-      final totalSpacing = _sectionSpacing;
+      final totalSpacing = sectionSpacing;
       final width = (availableWidth - totalSpacing) / 2;
       return math.max(0, width);
     }
 
     return baseItemWidth;
-  }
-}
-
-class _RepairCategoryCard extends StatelessWidget {
-  const _RepairCategoryCard({required this.category});
-
-  final _RepairCategory category;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x33000000),
-            blurRadius: 20,
-            offset: Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Semantics(
-        label: category.semanticsLabel,
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              _CategoryImage(assetPath: category.assetPath),
-              Align(
-                alignment: Alignment.bottomCenter,
-              child: Container(
-                  height: 52,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  alignment: Alignment.center,
-                  color: const Color(0x99000000),
-                  child: Text(
-                    category.title,
-                    textAlign: TextAlign.center,
-                    style:
-                        Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                        ) ??
-                        const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CategoryImage extends StatelessWidget {
-  const _CategoryImage({required this.assetPath});
-
-  final String assetPath;
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      assetPath,
-      fit: BoxFit.cover,
-      filterQuality: FilterQuality.medium,
-      errorBuilder: (context, error, stackTrace) {
-        return ColoredBox(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          child: const Center(
-            child: Icon(Icons.broken_image_outlined, size: 48),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _RepairCategory {
-  const _RepairCategory({
-    required this.title,
-    required this.assetPath,
-    required this.semanticsLabel,
-  });
-
-  final String title;
-  final String assetPath;
-  final String semanticsLabel;
-}
-
-class _MobileCategorySlide extends StatelessWidget {
-  const _MobileCategorySlide({required this.category});
-
-  final _RepairCategory category;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        _CategoryImage(assetPath: category.assetPath),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: 52,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            color: const Color(0x99000000),
-            alignment: Alignment.center,
-            child: Text(
-              category.title,
-              textAlign: TextAlign.center,
-              style:
-                  Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                  ) ??
-                  const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
 

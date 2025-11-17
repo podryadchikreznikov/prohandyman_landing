@@ -20,6 +20,7 @@ dependencies:
   file_saver: ^0.3.0
   flutter:
     sdk: flutter
+  flutter_tilt: ^3.0.0
   flutter_bloc: ^9.1.1
   flutter_flip_card: ^0.0.6
   flutter_quill: ^11.4.1
@@ -66,3 +67,4 @@ flutter:
     - assets/repair_categories/
     - assets/service_center_hero.jpg
     - assets/service_form_hero.jpg
+    - assets/handyman_images/

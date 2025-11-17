@@ -22,11 +22,17 @@ class _LandingHomePageState extends State<LandingHomePage> {
   double _lastScrollOffset = 0;
   double _headerTranslation = 0;
   double? _headerExtent;
+  bool _innerScrollLocked = false;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_handleScroll);
+  }
+
+  void _handleInnerScrollLock(bool locked) {
+    if (_innerScrollLocked == locked) return;
+    setState(() => _innerScrollLocked = locked);
   }
 
   @override
@@ -123,11 +129,16 @@ class _LandingHomePageState extends State<LandingHomePage> {
               children: [
                 SingleChildScrollView(
                   controller: _scrollController,
+                  physics: _innerScrollLocked
+                      ? const NeverScrollableScrollPhysics()
+                      : const ClampingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SizedBox(height: headerVisibleHeight),
-                      const LandingHomeBody(),
+                      LandingHomeBody(
+                        onInnerScrollLockChanged: _handleInnerScrollLock,
+                      ),
                       const LandingFooter(),
                     ],
                   ),

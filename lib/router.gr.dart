@@ -11,22 +11,6 @@
 part of 'router.dart';
 
 /// generated route for
-/// [LandingHomePage]
-class LandingHomeRoute extends PageRouteInfo<void> {
-  const LandingHomeRoute({List<PageRouteInfo>? children})
-    : super(LandingHomeRoute.name, initialChildren: children);
-
-  static const String name = 'LandingHomeRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const LandingHomePage();
-    },
-  );
-}
-
-/// generated route for
 /// [AuthPlaceholderPage]
 class AuthPlaceholderRoute extends PageRouteInfo<void> {
   const AuthPlaceholderRoute({List<PageRouteInfo>? children})
@@ -54,6 +38,38 @@ class EmptyRouterRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const EmptyRouterPage();
+    },
+  );
+}
+
+/// generated route for
+/// [LandingContactsPage]
+class LandingContactsRoute extends PageRouteInfo<void> {
+  const LandingContactsRoute({List<PageRouteInfo>? children})
+    : super(LandingContactsRoute.name, initialChildren: children);
+
+  static const String name = 'LandingContactsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const LandingContactsPage();
+    },
+  );
+}
+
+/// generated route for
+/// [LandingHomePage]
+class LandingHomeRoute extends PageRouteInfo<void> {
+  const LandingHomeRoute({List<PageRouteInfo>? children})
+    : super(LandingHomeRoute.name, initialChildren: children);
+
+  static const String name = 'LandingHomeRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const LandingHomePage();
     },
   );
 }

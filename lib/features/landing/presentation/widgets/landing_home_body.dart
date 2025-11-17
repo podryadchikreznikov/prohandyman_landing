@@ -6,29 +6,39 @@ import 'package:prohandyman_landing/features/landing/presentation/widgets/landin
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_repair_categories.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_service_center_section.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_why_us_benefits.dart';
+import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_partners_section.dart';
 
 /// Body content of the landing page (without its own scrolling).
 class LandingHomeBody extends StatelessWidget {
-  const LandingHomeBody({super.key});
+  const LandingHomeBody({
+    super.key,
+    this.onInnerScrollLockChanged,
+  });
+
+  final ValueChanged<bool>? onInnerScrollLockChanged;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
-      children: const [
-        RepaintBoundary(child: LandingHeroCarousel()),
-        SizedBox(height: 48),
-        LandingRepairCategories(),
-        SizedBox(height: 64),
-        LandingHowWeWork(),
-        SizedBox(height: 64),
-        LandingServiceCenterSection(),
-        SizedBox(height: 64),
-        LandingWhyUsBenefitsSection(),
-        SizedBox(height: 64),
-        LandingCallbackRequestSection(),
-        SizedBox(height: 80),
+      children: [
+        const RepaintBoundary(child: LandingHeroCarousel()),
+        const SizedBox(height: 48),
+        LandingRepairCategories(
+          onInnerScrollLockChanged: onInnerScrollLockChanged,
+        ),
+        const SizedBox(height: 64),
+        const LandingHowWeWork(),
+        const SizedBox(height: 64),
+        const LandingServiceCenterSection(),
+        const SizedBox(height: 64),
+        const LandingWhyUsBenefitsSection(),
+        const SizedBox(height: 64),
+        const LandingPartnersSection(),
+        const SizedBox(height: 64),
+        const LandingCallbackRequestSection(),
+        const SizedBox(height: 80),
       ],
     );
   }

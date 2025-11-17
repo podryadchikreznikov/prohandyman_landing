@@ -8,6 +8,10 @@ const _hexVerticalPadding = 12.0;
 const _horizontalConnectorLength = 42.0;
 const _verticalConnectorLength = 32.0;
 
+const _stepCardDescriptionWidth = 200.0;
+const _stepCardHorizontalPadding = 8.0;
+const _horizontalStepGap = 16.0;
+
 const _compactStepperBreakpoint = 900.0;
 
 /// Section that highlights how the company works.
@@ -17,23 +21,36 @@ class LandingHowWeWork extends StatefulWidget {
   static const _steps = <_HowWeWorkStep>[
     _HowWeWorkStep(
       icon: Icons.call_outlined,
-      title: 'Заявка на ремонт',
-      description: 'Вы связываетесь с нами на сайте или по телефону',
+      title: 'Заявка',
+      description: 'Оставляете заявку по телефону или на нашем сайте',
+    ),
+    _HowWeWorkStep(
+      icon: Icons.calculate_outlined,
+      title: 'Расчет стоимости',
+      description:
+          'Наш менеджер рассчитает стоимость и свяжется с Вами для согласования',
+    ),
+    _HowWeWorkStep(
+      icon: Icons.chat_bubble_outline,
+      title: 'Согласование',
+      description:
+          'Менеджер согласовывает с Вами предварительный расчет',
     ),
     _HowWeWorkStep(
       icon: Icons.engineering_outlined,
-      title: 'Выезд мастера',
-      description: 'Проведение диагностики и определение неисправностей',
+      title: 'Выполнение работ',
+      description: 'Мастера выполняют работы согласно исходным данным',
     ),
     _HowWeWorkStep(
-      icon: Icons.settings_outlined,
-      title: 'Ремонт',
-      description: 'Работы ведутся на дому, без транспортировки в мастерскую',
+      icon: Icons.assignment_turned_in_outlined,
+      title: 'Приемка работ',
+      description:
+          'Производится приемка работ и подписание акта выполненных работ',
     ),
     _HowWeWorkStep(
-      icon: Icons.verified_user_outlined,
-      title: 'Проверка и гарантия',
-      description: 'Принимаете работу, получаете чек и гарантийный талон',
+      icon: Icons.payment_outlined,
+      title: 'Оплата',
+      description: 'Оплата выполненных работ',
     ),
   ];
 
@@ -103,7 +120,13 @@ class _CompactStepperGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.titleMedium;
+    final textTheme = Theme.of(context).textTheme;
+    final textStyle = textTheme.titleMedium;
+    final baseLabelStyle = textStyle ?? const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w600,
+    );
+    final labelStyle = baseLabelStyle.copyWith(color: Colors.grey.shade600);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -111,22 +134,43 @@ class _CompactStepperGrid extends StatelessWidget {
         final spacing = 24.0;
         const columns = 2;
         final itemWidth = (maxWidth - spacing * (columns - 1)) / columns;
+        final hexLeftInset = (itemWidth - _hexSize.width) / 2;
 
         return Wrap(
           spacing: spacing,
           runSpacing: spacing,
           alignment: WrapAlignment.center,
           children: [
-            for (final step in steps)
+            for (var index = 0; index < steps.length; index++)
               SizedBox(
                 width: itemWidth,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _HexIcon(icon: step.icon),
+                    SizedBox(
+                      height: _hexSize.height + 12,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned(
+                            left: hexLeftInset + 4,
+                            top: 0,
+                            child: Text('${index + 1}', style: labelStyle),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: _HexIcon(
+                              icon: steps[index].icon,
+                              index: index,
+                              totalCount: steps.length,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 12),
                     Text(
-                      step.title,
+                      steps[index].title,
                       textAlign: TextAlign.center,
                       style: textStyle,
                     ),
@@ -147,32 +191,46 @@ class _HorizontalStepper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = <Widget>[];
-    for (var i = 0; i < steps.length; i++) {
-      if (i != 0) {
-        children.add(const SizedBox(width: 32));
-      }
-      children.add(_HowWeWorkStepCard(step: steps[i]));
-    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final children = <Widget>[];
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const NeverScrollableScrollPhysics(),
-      child: Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned.fill(
-              child: CustomPaint(painter: _BackgroundDashedLinePainter()),
+        for (var i = 0; i < steps.length; i++) {
+          if (i != 0) {
+            children.add(const SizedBox(width: _horizontalStepGap));
+          }
+          children.add(
+            Expanded(
+              child: _HowWeWorkStepCard(
+                step: steps[i],
+                index: i,
+                totalCount: steps.length,
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: children,
-            ),
-          ],
-        ),
-      ),
+          );
+        }
+
+        return SizedBox(
+          width: constraints.maxWidth,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _BackgroundDashedLinePainter(
+                    stepsCount: steps.length,
+                    gap: _horizontalStepGap,
+                  ),
+                ),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: children,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -186,7 +244,13 @@ class _VerticalStepper extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = <Widget>[];
     for (var i = 0; i < steps.length; i++) {
-      children.add(_HowWeWorkStepCard(step: steps[i]));
+      children.add(
+        _HowWeWorkStepCard(
+          step: steps[i],
+          index: i,
+          totalCount: steps.length,
+        ),
+      );
       if (i != steps.length - 1) {
         children.add(
           const _StepConnector(
@@ -206,9 +270,15 @@ class _VerticalStepper extends StatelessWidget {
 }
 
 class _HowWeWorkStepCard extends StatelessWidget {
-  const _HowWeWorkStepCard({required this.step});
+  const _HowWeWorkStepCard({
+    required this.step,
+    required this.index,
+    required this.totalCount,
+  });
 
   final _HowWeWorkStep step;
+  final int index;
+  final int totalCount;
 
   @override
   Widget build(BuildContext context) {
@@ -231,12 +301,12 @@ class _HowWeWorkStepCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _HexIcon(icon: step.icon),
+        _HexIcon(icon: step.icon, index: index, totalCount: totalCount),
         const SizedBox(height: 16),
         Text(step.title, style: titleStyle, textAlign: TextAlign.center),
         const SizedBox(height: 8),
         SizedBox(
-          width: 200,
+          width: _stepCardDescriptionWidth,
           child: Text(
             step.description,
             style: descriptionStyle,
@@ -247,19 +317,39 @@ class _HowWeWorkStepCard extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: _stepCardHorizontalPadding,
+        vertical: _hexVerticalPadding,
+      ),
       child: content,
     );
   }
 }
 
 class _HexIcon extends StatelessWidget {
-  const _HexIcon({required this.icon});
+  const _HexIcon({
+    required this.icon,
+    required this.index,
+    required this.totalCount,
+  });
 
   final IconData icon;
+  final int index;
+  final int totalCount;
 
   @override
   Widget build(BuildContext context) {
+    final total = totalCount <= 1 ? 1 : totalCount - 1;
+    final t = totalCount <= 1 ? 0.0 : index / total;
+
+    const startColor = Color(0xFF8B1A3C); // бордовый
+    const endColor = Color(0xFFFFD700); // золотой
+    final backgroundColor =
+        Color.lerp(startColor, endColor, t) ?? startColor;
+
+    final luminance = backgroundColor.computeLuminance();
+    final iconColor = luminance > 0.5 ? Colors.black87 : Colors.white;
+
     return SizedBox(
       width: _hexSize.width,
       height: _hexSize.height,
@@ -270,10 +360,10 @@ class _HexIcon extends StatelessWidget {
           ClipPath(
             clipper: _HexagonClipper(),
             child: Container(
-              decoration: const BoxDecoration(color: Color(0xFFF1F1F1)),
+              decoration: BoxDecoration(color: backgroundColor),
             ),
           ),
-          Icon(icon, size: 38, color: Colors.black54),
+          Icon(icon, size: 38, color: iconColor),
         ],
       ),
     );
@@ -302,17 +392,36 @@ class _StepConnector extends StatelessWidget {
 }
 
 class _BackgroundDashedLinePainter extends CustomPainter {
+  const _BackgroundDashedLinePainter({
+    required this.stepsCount,
+    required this.gap,
+  });
+
+  final int stepsCount;
+  final double gap;
+
   @override
   void paint(Canvas canvas, Size size) {
+    if (stepsCount <= 0) return;
+
     const dashWidth = 5.0;
     const dashGap = 5.0;
     final paint = Paint()
       ..color = Colors.grey.shade400
       ..strokeWidth = 2;
 
-    final inset = _hexSize.width / 2 + 16;
-    var startX = inset;
-    final maxX = size.width - inset;
+    final totalGapWidth = gap * (stepsCount - 1).clamp(0, stepsCount - 1);
+    final cardWidth =
+        stepsCount > 0 ? (size.width - totalGapWidth) / stepsCount : size.width;
+    final hexHorizontalOffsetInsideCard =
+        (cardWidth - _hexSize.width).clamp(0, cardWidth) / 2;
+
+    // Укорачиваем линию, чтобы она оставалась внутри крайних шестигранников
+    const safeInsetInsideHex = 8.0;
+    final sideInset = hexHorizontalOffsetInsideCard + safeInsetInsideHex;
+
+    var startX = sideInset;
+    final maxX = size.width - sideInset;
 
     final theoreticalCenterY = _hexVerticalPadding + _hexSize.height / 2;
     final centerY = math.min(theoreticalCenterY, size.height - 1);
