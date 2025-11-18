@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:prohandyman_landing/core/theme/app_theme_tokens.dart';
+import 'package:prohandyman_landing/presentation/widgets/tilt_wrapper.dart';
 
 import '../../../../../core/smart_captcha/smart_captcha_service.dart';
 import '../../../../../injection_container.dart';
@@ -9,7 +10,12 @@ import '../../../domain/usecases/submit_callback_request.dart';
 import 'callback_request_form.dart';
 
 class LandingCallbackRequestSection extends StatelessWidget {
-  const LandingCallbackRequestSection({super.key});
+  const LandingCallbackRequestSection({
+    super.key,
+    this.tiltPointerController,
+  });
+
+  final TiltGlobalPointerController? tiltPointerController;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +38,11 @@ class LandingCallbackRequestSection extends StatelessWidget {
                 color: colorScheme.surface.withValues(alpha: 0.96),
                 borderRadius: BorderRadius.zero,
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(32),
-                child: _CallbackRequestBody(),
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: _CallbackRequestBody(
+                  tiltPointerController: tiltPointerController,
+                ),
               ),
             ),
           ),
@@ -45,7 +53,9 @@ class LandingCallbackRequestSection extends StatelessWidget {
 }
 
 class _CallbackRequestBody extends StatelessWidget {
-  const _CallbackRequestBody();
+  const _CallbackRequestBody({this.tiltPointerController});
+
+  final TiltGlobalPointerController? tiltPointerController;
 
   @override
   Widget build(BuildContext context) {
@@ -70,16 +80,25 @@ class _CallbackRequestBody extends StatelessWidget {
             const SizedBox(width: 32),
             Expanded(
               flex: 6,
-              child: AspectRatio(
-                aspectRatio: 4 / 3,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
+              child: TiltWrapper(
+                borderRadius: BorderRadius.zero,
+                enableLight: false,
+                globalPointerMode: tiltPointerController != null,
+                globalPointerController: tiltPointerController,
+                invertGlobalPointer: true,
+                child: AspectRatio(
+                  aspectRatio: 4 / 3,
+                  child: ClipRRect(
                     borderRadius: BorderRadius.zero,
-                    image: const DecorationImage(
-                      image: AssetImage('assets/service_form_hero.jpg'),
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        image: const DecorationImage(
+                          image: AssetImage('assets/service_form_hero.jpg'),
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                        ),
+                      ),
                     ),
                   ),
                 ),

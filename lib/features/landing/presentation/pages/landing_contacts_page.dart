@@ -5,10 +5,30 @@ import 'package:prohandyman_landing/core/theme/extensions/landing_header_theme.d
 import 'package:prohandyman_landing/features/landing/presentation/widgets/callback_request/landing_callback_request_section.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_footer.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_home_header.dart';
+import 'package:prohandyman_landing/presentation/widgets/tilt_wrapper.dart';
 
 @RoutePage()
-class LandingContactsPage extends StatelessWidget {
+class LandingContactsPage extends StatefulWidget {
   const LandingContactsPage({super.key});
+
+  @override
+  State<LandingContactsPage> createState() => _LandingContactsPageState();
+}
+
+class _LandingContactsPageState extends State<LandingContactsPage> {
+  late final TiltGlobalPointerController _tiltPointerController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tiltPointerController = TiltGlobalPointerController();
+  }
+
+  @override
+  void dispose() {
+    _tiltPointerController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,28 +54,35 @@ class LandingContactsPage extends StatelessWidget {
       foregroundColor: appBarForegroundColor,
     );
 
-    return Stack(
-      children: [
-        const _ContactsPatternBackgroundLayer(),
-        Padding(
-          padding: const EdgeInsets.only(top: AppThemeTokens.pageTopPadding),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: header,
-            body: const SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(height: 32),
-                  LandingCallbackRequestSection(),
-                  SizedBox(height: 80),
-                  LandingFooter(),
-                ],
+    return MouseRegion(
+      onHover: (event) =>
+          _tiltPointerController.updatePosition(event.position),
+      onExit: (_) => _tiltPointerController.updatePosition(null),
+      child: Stack(
+        children: [
+          const _ContactsPatternBackgroundLayer(),
+          Padding(
+            padding: const EdgeInsets.only(top: AppThemeTokens.pageTopPadding),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: header,
+              body: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 32),
+                    LandingCallbackRequestSection(
+                      tiltPointerController: _tiltPointerController,
+                    ),
+                    const SizedBox(height: 80),
+                    const LandingFooter(),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:prohandyman_landing/core/theme/app_theme_tokens.dart';
 import 'package:prohandyman_landing/core/theme/extensions/landing_service_center_theme.dart';
+import 'package:prohandyman_landing/presentation/widgets/tilt_wrapper.dart';
 
 /// Section describing the service center: text on the left, photo on the right.
 class LandingServiceCenterSection extends StatefulWidget {
-  const LandingServiceCenterSection({super.key});
+  const LandingServiceCenterSection({
+    super.key,
+    this.tiltPointerController,
+  });
+
+  final TiltGlobalPointerController? tiltPointerController;
 
   static const _bodyText = '''
 Сервисный центр MTL предлагает полный комплекс услуг по диагностике и устранению неисправностей бытовой техники разного назначения — посудомоечные и стиральные машины, холодильники, водонагреватели, варочные панели и духовые шкафы. Опытные мастера быстро определяют причину поломки и оперативно проведут ремонт, заменив необходимые комплектующие. На работы предоставляется официальная гарантия до 12 месяцев.
@@ -66,12 +72,14 @@ class _LandingServiceCenterSectionState
       return _ServiceCenterCompactLayout(
         quoteText: LandingServiceCenterSection._quoteText,
         serviceTheme: serviceTheme,
+        tiltPointerController: widget.tiltPointerController,
       );
     }
 
     return _ServiceCenterWideLayout(
       bodyText: LandingServiceCenterSection._bodyText,
       serviceTheme: serviceTheme,
+      tiltPointerController: widget.tiltPointerController,
     );
   }
 }
@@ -80,10 +88,12 @@ class _ServiceCenterWideLayout extends StatelessWidget {
   const _ServiceCenterWideLayout({
     required this.bodyText,
     required this.serviceTheme,
+    this.tiltPointerController,
   });
 
   final String bodyText;
   final LandingServiceCenterTheme serviceTheme;
+  final TiltGlobalPointerController? tiltPointerController;
 
   @override
   Widget build(BuildContext context) {
@@ -115,16 +125,24 @@ class _ServiceCenterWideLayout extends StatelessWidget {
                 ),
               );
 
+              final resolvedRadius = serviceTheme.wideImageBorderRadius
+                  .resolve(Directionality.of(context));
+              final imageContent = AspectRatio(
+                aspectRatio: 4 / 3,
+                child: const _ServiceCenterImage(),
+              );
+
               final image = Expanded(
                 flex: 3,
                 child: Padding(
                   padding: EdgeInsets.only(top: isHorizontal ? 0 : 24),
-                  child: ClipRRect(
-                    borderRadius: serviceTheme.wideImageBorderRadius,
-                    child: const AspectRatio(
-                      aspectRatio: 4 / 3,
-                      child: _ServiceCenterImage(),
-                    ),
+                  child: TiltWrapper(
+                    borderRadius: resolvedRadius,
+                    enableLight: false,
+                    globalPointerMode: tiltPointerController != null,
+                    globalPointerController: tiltPointerController,
+                    invertGlobalPointer: true,
+                    child: imageContent,
                   ),
                 ),
               );
@@ -152,10 +170,12 @@ class _ServiceCenterCompactLayout extends StatelessWidget {
   const _ServiceCenterCompactLayout({
     required this.quoteText,
     required this.serviceTheme,
+    this.tiltPointerController,
   });
 
   final String quoteText;
   final LandingServiceCenterTheme serviceTheme;
+  final TiltGlobalPointerController? tiltPointerController;
 
   @override
   Widget build(BuildContext context) {
@@ -173,8 +193,15 @@ class _ServiceCenterCompactLayout extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-              ClipRRect(
-                borderRadius: serviceTheme.compactImageBorderRadius,
+              TiltWrapper(
+                borderRadius:
+                    serviceTheme.compactImageBorderRadius.resolve(
+                  Directionality.of(context),
+                ),
+                enableLight: false,
+                globalPointerMode: tiltPointerController != null,
+                globalPointerController: tiltPointerController,
+                invertGlobalPointer: true,
                 child: AspectRatio(
                   aspectRatio: 4 / 3,
                   child: Stack(

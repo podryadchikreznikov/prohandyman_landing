@@ -97,6 +97,7 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
                               itemCount: repairCategories.length,
                             ),
                             child: TiltWrapper(
+                              borderRadius: BorderRadius.zero,
                               child: RepairCategoryCard(
                                 category: repairCategories[i],
                                 onScrollLockChanged:

@@ -5,6 +5,7 @@ import 'package:prohandyman_landing/core/theme/extensions/landing_header_theme.d
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_footer.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_home_body.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_home_header.dart';
+import 'package:prohandyman_landing/presentation/widgets/tilt_wrapper.dart';
 
 /// Placeholder for the future landing home screen.
 @RoutePage()
@@ -15,6 +16,7 @@ class LandingHomePage extends StatefulWidget {
   State<LandingHomePage> createState() => _LandingHomePageState();
 }
 
+
 class _LandingHomePageState extends State<LandingHomePage> {
   bool? _useCompactHeader;
   double? _initialViewportWidth;
@@ -23,11 +25,13 @@ class _LandingHomePageState extends State<LandingHomePage> {
   double _headerTranslation = 0;
   double? _headerExtent;
   bool _innerScrollLocked = false;
+  late final TiltGlobalPointerController _tiltPointerController;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_handleScroll);
+    _tiltPointerController = TiltGlobalPointerController();
   }
 
   void _handleInnerScrollLock(bool locked) {
@@ -69,6 +73,7 @@ class _LandingHomePageState extends State<LandingHomePage> {
   void dispose() {
     _scrollController.removeListener(_handleScroll);
     _scrollController.dispose();
+    _tiltPointerController.dispose();
     super.dispose();
   }
 
@@ -117,46 +122,52 @@ class _LandingHomePageState extends State<LandingHomePage> {
         .clamp(0.0, headerHeight)
         .toDouble();
 
-    return Stack(
-      children: [
-        const _PatternBackgroundLayer(),
-        Padding(
-          padding: const EdgeInsets.only(top: AppThemeTokens.pageTopPadding),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                SingleChildScrollView(
-                  controller: _scrollController,
-                  physics: _innerScrollLocked
-                      ? const NeverScrollableScrollPhysics()
-                      : const ClampingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(height: headerVisibleHeight),
-                      LandingHomeBody(
-                        onInnerScrollLockChanged: _handleInnerScrollLock,
-                      ),
-                      const LandingFooter(),
-                    ],
+    return MouseRegion(
+      onHover: (event) =>
+          _tiltPointerController.updatePosition(event.position),
+      onExit: (_) => _tiltPointerController.updatePosition(null),
+      child: Stack(
+        children: [
+          const _PatternBackgroundLayer(),
+          Padding(
+            padding: const EdgeInsets.only(top: AppThemeTokens.pageTopPadding),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  SingleChildScrollView(
+                    controller: _scrollController,
+                    physics: _innerScrollLocked
+                        ? const NeverScrollableScrollPhysics()
+                        : const ClampingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: headerVisibleHeight),
+                        LandingHomeBody(
+                          onInnerScrollLockChanged: _handleInnerScrollLock,
+                          tiltPointerController: _tiltPointerController,
+                        ),
+                        const LandingFooter(),
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Transform.translate(
-                    offset: Offset(0, _headerTranslation),
-                    child: header,
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Transform.translate(
+                      offset: Offset(0, _headerTranslation),
+                      child: header,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -7,15 +7,18 @@ import 'package:prohandyman_landing/features/landing/presentation/widgets/landin
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_service_center_section.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_why_us_benefits.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_partners_section.dart';
+import 'package:prohandyman_landing/presentation/widgets/tilt_wrapper.dart';
 
 /// Body content of the landing page (without its own scrolling).
 class LandingHomeBody extends StatelessWidget {
   const LandingHomeBody({
     super.key,
     this.onInnerScrollLockChanged,
+    this.tiltPointerController,
   });
 
   final ValueChanged<bool>? onInnerScrollLockChanged;
+  final TiltGlobalPointerController? tiltPointerController;
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +34,17 @@ class LandingHomeBody extends StatelessWidget {
         const SizedBox(height: 64),
         const LandingHowWeWork(),
         const SizedBox(height: 64),
-        const LandingServiceCenterSection(),
+        LandingServiceCenterSection(
+          tiltPointerController: tiltPointerController,
+        ),
         const SizedBox(height: 64),
         const LandingWhyUsBenefitsSection(),
         const SizedBox(height: 64),
         const LandingPartnersSection(),
         const SizedBox(height: 64),
-        const LandingCallbackRequestSection(),
+        LandingCallbackRequestSection(
+          tiltPointerController: tiltPointerController,
+        ),
         const SizedBox(height: 80),
       ],
     );
