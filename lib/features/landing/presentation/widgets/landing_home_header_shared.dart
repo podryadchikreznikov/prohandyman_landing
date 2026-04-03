@@ -176,7 +176,7 @@ class _CompanyHeader extends StatelessWidget {
         FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
-            'MTL сервис бытовой техники',
+            'ProHandyman',
             style: compact
                 ? theme.titleTextStyle.copyWith(
                     fontSize: (theme.titleTextStyle.fontSize ?? 20) * 0.9,
@@ -188,7 +188,7 @@ class _CompanyHeader extends StatelessWidget {
         FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
-            'С 2008 года ремонтируем брендовые устройства',
+            'Сборка мебели и оборудования для бизнеса',
             style: compact
                 ? theme.subtitleTextStyle.copyWith(
                     fontSize: (theme.subtitleTextStyle.fontSize ?? 14) * 0.9,
@@ -353,7 +353,7 @@ class _NavBar extends StatelessWidget {
                             horizontal: 8,
                             vertical: 4,
                           ),
-                          child: label == 'Услуги'
+                          child: label == 'Услуги' || label == 'Цены'
                               ? Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -483,14 +483,14 @@ const _navItems = <String>[
   'Главная',
   'Услуги',
   'Цены',
-  'Новости',
+  'Партнеры',
   'О компании',
   'Контакты',
 ];
 
 const _headerInfoItems = <(IconData, String)>[
   (Icons.schedule_outlined, 'Пн-Вс: с 08:00 до 20:00'),
-  (Icons.mail_outline, 'info@MTL-servis.ru'),
+  (Icons.mail_outline, 'info@подрядчик.com'),
   (Icons.phone_in_talk_outlined, '+7 (999) 497-85-32'),
   (Icons.phone_in_talk_outlined, '+7 (343) 521-55-09'),
 ];
@@ -500,10 +500,27 @@ void _handleHeaderNavTap(BuildContext context, String label) {
 
   switch (label) {
     case 'Главная':
-      router.pushNamed(RoutePaths.root);
+      router.navigate(const NamedRoute('LandingHomeRoute'));
+      break;
+    case 'Услуги':
+      router.navigate(const NamedRoute('LandingServicesRoute'));
+      break;
+    case 'Цены':
+      router.navigate(
+        const NamedRoute(
+          'LandingServicesRoute',
+          queryParams: {'section': 'prices'},
+        ),
+      );
+      break;
+    case 'О компании':
+      router.navigate(const NamedRoute('LandingAboutRoute'));
+      break;
+    case 'Партнеры':
+      router.navigate(const NamedRoute('LandingPartnersRoute'));
       break;
     case 'Контакты':
-      router.pushNamed(RoutePaths.contacts);
+      router.navigate(const NamedRoute('LandingContactsRoute'));
       break;
     default:
       break;
@@ -511,5 +528,5 @@ void _handleHeaderNavTap(BuildContext context, String label) {
 }
 
 void _navigateToContacts(BuildContext context) {
-  AutoRouter.of(context).pushNamed(RoutePaths.contacts);
+  AutoRouter.of(context).navigate(const NamedRoute('LandingContactsRoute'));
 }

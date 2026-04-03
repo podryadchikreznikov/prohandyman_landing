@@ -22,35 +22,33 @@ class LandingHowWeWork extends StatefulWidget {
     _HowWeWorkStep(
       icon: Icons.call_outlined,
       title: 'Заявка',
-      description: 'Оставляете заявку по телефону или на нашем сайте',
+      description: 'Оставляете заявку на сайте, по телефону или в мессенджере',
     ),
     _HowWeWorkStep(
       icon: Icons.calculate_outlined,
-      title: 'Расчет стоимости',
+      title: 'Расчёт стоимости',
       description:
-          'Наш менеджер рассчитает стоимость и свяжется с Вами для согласования',
+          'Менеджер уточняет детали и готовит предварительную смету',
     ),
     _HowWeWorkStep(
       icon: Icons.chat_bubble_outline,
       title: 'Согласование',
-      description:
-          'Менеджер согласовывает с Вами предварительный расчет',
+      description: 'Согласовываем условия, сроки и официальный договор',
     ),
     _HowWeWorkStep(
       icon: Icons.engineering_outlined,
       title: 'Выполнение работ',
-      description: 'Мастера выполняют работы согласно исходным данным',
+      description: 'Мастера выполняют работы по проекту и техническому заданию',
     ),
     _HowWeWorkStep(
       icon: Icons.assignment_turned_in_outlined,
       title: 'Приемка работ',
-      description:
-          'Производится приемка работ и подписание акта выполненных работ',
+      description: 'Принимаете результат и подписываете акт выполненных работ',
     ),
     _HowWeWorkStep(
       icon: Icons.payment_outlined,
       title: 'Оплата',
-      description: 'Оплата выполненных работ',
+      description: 'Финальная оплата после вашего одобрения результата',
     ),
   ];
 

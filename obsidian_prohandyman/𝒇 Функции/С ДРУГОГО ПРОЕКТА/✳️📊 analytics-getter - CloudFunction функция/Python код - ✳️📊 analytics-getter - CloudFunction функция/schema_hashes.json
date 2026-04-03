@@ -1,0 +1,191 @@
+{
+  "title": "analytics-getter contracts",
+  "schema_hash_alg": "sha256(json.dumps(schema, sort_keys=True, separators=(',',':'), ensure_ascii=False))",
+  "endpoints": {
+    "/firms/{firm_id}/analytics/object-finance-history": {
+      "method": "POST",
+      "request_schema_hash": "e7da52710edd7235f1ab743ae2c26204c26b06659346c19a61550bdc49ff6d33",
+      "response_schema_hash": "4c670eedaf41db4f152e8c668ad991110ed6d3f07b0e55eecde77a6358db35e4"
+    },
+    "/firms/{firm_id}/analytics/object-activity-presence": {
+      "method": "POST",
+      "request_schema_hash": "c92a440b1467c41119894b807dad1a38ea9a505de429915a34c5be748a4492c7",
+      "response_schema_hash": "20ee601a6dc145774cfe1a3112ea0cbd75853c62eb8b6be698a5199f88092ea7"
+    },
+    "/firms/{firm_id}/analytics/my-object-presence": {
+      "method": "POST",
+      "request_schema_hash": "8cf230f25e614d6d675a026f695c1bf86760da495d904770e45d570b04f5066c",
+      "response_schema_hash": "0b3739710d51f3d4eb71109d13df4c307deab335769e2f346ccb36afdbead217"
+    },
+    "/firms/{firm_id}/analytics/object-activity-timeline": {
+      "method": "POST",
+      "request_schema_hash": "a1d1cfad3522d56c7de581d0e08212cce164a72db44406ec789bb4aa34d67394",
+      "response_schema_hash": "82a26db9a284ae342e259b384f55c0443f8740b3f47267c0836f178ccbc46ae6"
+    },
+    "/firms/{firm_id}/analytics/finance-turnover": {
+      "method": "POST",
+      "request_schema_hash": "2f3c5670c0b3f5c0790b0ec77e4f5b6f9fa456a829e0b7a9a249a71be1a3c203",
+      "response_schema_hash": "d544d76a478784ceb3019d961ff03625e8db0ea5f6b0980cc9f3bc5037c0c914"
+    },
+    "/firms/{firm_id}/analytics/finance-gross-profit": {
+      "method": "POST",
+      "request_schema_hash": "8cc8b4555ac60775619bba0036bce2d403e20c3e874d849b24d1d5f1810e6fd5",
+      "response_schema_hash": "2fb5565e6d1275f7506f5da930c990a65f3842e1806cc9d77e1c14d633f37cd3"
+    },
+    "/firms/{firm_id}/analytics/finance-objects-summary": {
+      "method": "POST",
+      "request_schema_hash": "165651dd28eccb5e1653427ee29261daeea87007ebe3782d9971c3b694de5e2b",
+      "response_schema_hash": "a62126b422a3359b6b5f27faae66b4fdf916b7474d15268cfab9d5d3966fffe8"
+    },
+    "/firms/{firm_id}/analytics/employee/absences/total": {
+      "method": "POST",
+      "request_schema_hash": "43c3863123279dd36520578137fc7d36705398fa8a1e2230610544aba5088851",
+      "response_schema_hash": "9b08f2cf08ce643bbb494e25ad1fbaa577dacd2353cbdbcdf67d873cebef85d3"
+    },
+    "/firms/{firm_id}/analytics/employee/absences/disputed": {
+      "method": "POST",
+      "request_schema_hash": "159e09a6437f62e0fea406792bd82c0c225832c46bdc4452665327b2d2c1a8ad",
+      "response_schema_hash": "4b12cc3c0f6bf79b4d7aff12bde57db7c1abf7ead0c5a0ca7a2f261e9b32c4e9"
+    },
+    "/firms/{firm_id}/analytics/employee/absences/month": {
+      "method": "POST",
+      "request_schema_hash": "dad8351a4a5e0d55ea9ba5f4186b73af22e916e460b141e7ef9f595eeab723c8",
+      "response_schema_hash": "0c255a8c7f00165943b596d9fcdd3789589ff1f8fa28bb030f0cf751964a413d"
+    },
+    "/firms/{firm_id}/analytics/employee/absences/month-details": {
+      "method": "POST",
+      "request_schema_hash": "e2bb284b9dfd65c0a7668d2e55081ea764f864e5519bac060cc7359b772c0d21",
+      "response_schema_hash": "7d572a2f447b367f7dfa6786c856e9ca67b5606f2c75806f93916ced6892d5f4"
+    },
+    "/firms/{firm_id}/analytics/employee/attendance/month-summary": {
+      "method": "POST",
+      "request_schema_hash": "07f557870f1506d4d543e0e7dc8b973538af7de342a1cbfb1b0e54dd63ffaf40",
+      "response_schema_hash": "74e2920b71ba6784fdd612c8e578a7f1430a4fd4d6ebbba79e9f5c42222bc0d0"
+    },
+    "/firms/{firm_id}/analytics/employee/attendance/day-details": {
+      "method": "POST",
+      "request_schema_hash": "07e0a8807bc4006c872ff1d7664304624f0f68c79ac0a4b224542198c3179d5f",
+      "response_schema_hash": "7f7e542c771175449283e2af964c6ea4100c6b86b90c7377305c20e3138536ce"
+    },
+    "/firms/{firm_id}/analytics/employee/calendar/day-upcoming": {
+      "method": "POST",
+      "request_schema_hash": "ca41bb833d63491cb55194b5f6fb73a2063236a0dfa86cc614c1ac074ddbf5e4",
+      "response_schema_hash": "3e388ed058f2fbc5dd70017d5c1107d0ea6db8acd19935d1c0ada03257e6f550"
+    },
+    "/firms/{firm_id}/analytics/employee/calendar/day-period": {
+      "method": "POST",
+      "request_schema_hash": "3e7e957b9adaf0cad4b466e2ba2b2b93ca3a4e1163246c6b09c1b36866faa857",
+      "response_schema_hash": "3e388ed058f2fbc5dd70017d5c1107d0ea6db8acd19935d1c0ada03257e6f550"
+    },
+    "/firms/{firm_id}/analytics/employee/finance/month-list": {
+      "method": "POST",
+      "request_schema_hash": "0ea3137d5bb3718ea861e601bcb202643ab9676c0b32f15888493cdc92a458d9",
+      "response_schema_hash": "36f2c108eb91e00b8f3a27cf50ced572d60d1cb14b93c04f38fc6d8e8930da93"
+    },
+    "/firms/{firm_id}/analytics/employee/finance/month-total": {
+      "method": "POST",
+      "request_schema_hash": "3bfe335b632868ea9e3d3438aa359421006e3fa0a221d7626d8f00d3b34cb8aa",
+      "response_schema_hash": "988a0c3a52c0d8d81f9e94014bdff3ec30ff7e74e245fcba2d041e5826dfb879"
+    },
+    "/firms/{firm_id}/analytics/employee/finance/total": {
+      "method": "POST",
+      "request_schema_hash": "c4f7b431f587cd4ac15b049ceccf5cbd28b4a456743233247ca73659ab6662d4",
+      "response_schema_hash": "bdba4ce61c523b7c27cde7f7548edc4f8337317faf1068cf5fd8e6004f569f96"
+    },
+    "/firms/{firm_id}/analytics/employee/finance/cash-plan": {
+      "method": "POST",
+      "request_schema_hash": "65a338b8e9ab9c709dcd32fcda86de6f76dd74abdfb3755a7b4741c890b9bc9b",
+      "response_schema_hash": "6da6af46447882fe7d96061825b7673e50affed851e64b5fce714e037f387183"
+    },
+    "/firms/{firm_id}/analytics/payroll/queue": {
+      "method": "POST",
+      "request_schema_hash": "18b81f4ab186fe91af1b07d89dca24291b4c1d0bc677e40bae859ab32d38cebd",
+      "response_schema_hash": "ee5a6a05003edd32932f460a78fd55625ce6f235d0c3ea96a720962860f1bb8a"
+    },
+    "/firms/{firm_id}/analytics/payroll/history": {
+      "method": "POST",
+      "request_schema_hash": "fe289509dd7e6a5332d185b533e3868030fc88775525843c7bf5dce8e8434b81",
+      "response_schema_hash": "cb4f5244968235284b0d4bb461424f73943b383f4e6a5559ab42323086e2c676"
+    },
+    "/firms/{firm_id}/analytics/dispatcher-settlement/queue": {
+      "method": "POST",
+      "request_schema_hash": "fdafe89fbd5d709a835e49a6c254010b876b9aa9d571e601ddee764960531104",
+      "response_schema_hash": "fc9e3d1a98c8d677962e109e4d149d1ce37a8ea46509e696447c9a4097cf8a75"
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-year-total": {
+      "method": "POST",
+      "request_schema_hash": "407eb55bbe0aa395f1b37ae2b4c41ebf87aef2a3e4fc7003773b148212de732d",
+      "response_schema_hash": "eaa23fe70a74ebe0b933f12ad55ec3c2633039f2dccf481981b29d8ab9fc8822"
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-year-percent-avg": {
+      "method": "POST",
+      "request_schema_hash": "533404a118c40fa96010dcd5961116354dae888b6cc3567066c04317fa0f59cb",
+      "response_schema_hash": "2a112401e54d145b7e125e281d3861b8b2d0a676922250db8faa49ecaae0bc29"
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-month-total": {
+      "method": "POST",
+      "request_schema_hash": "991aed1c74069162e79ec9d814d2c4b46a4b94e21a7c031f67c264125b6a465b",
+      "response_schema_hash": "58d0111350ecabd5cf3df6d6c917e01bd1505fcde2c9f07641519f8d4d3c4a07"
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-month-percent-avg": {
+      "method": "POST",
+      "request_schema_hash": "d404525a7e968f910fa70043e6e9e351b3a24c31329cd2bb4462cfdf16a2d328",
+      "response_schema_hash": "1b84fa8c734838b7d32c9a242eef1b8860d12b69f506a65a35971406175129cf"
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-user-total": {
+      "method": "POST",
+      "request_schema_hash": "63ba265f30137ee72b6317cb85f9e9d83dc77e5202a31b18e30267bf06ac1f68",
+      "response_schema_hash": "10094d4c8892d8bcea93b21583a520b5b89420df69a6a621054f707e7dbe53d1"
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-user-total-all-firms": {
+      "method": "POST",
+      "request_schema_hash": "30f9fc071122ae20c3b08dcd8e022e0333051961ef68445033ab3c5c9477e8f4",
+      "response_schema_hash": "f777d13a700ff186399c0b35718e205c2f9c7ba1ab4fd23d1d6c2e5b3e8e3dea"
+    },
+    "/firms/{firm_id}/analytics/worker-month-work": {
+      "method": "POST",
+      "request_schema_hash": "80083753b63eb77af2691bd0608c85954fa5f69783c9c345091b6a570ea4a2f4",
+      "response_schema_hash": "c5190c5fa00dddcafdb63e3bf6613c57424fdad38cecba6a252c69b1028cb156"
+    },
+    "/firms/{firm_id}/analytics/worker-day-work-all-firms": {
+      "method": "POST",
+      "request_schema_hash": "1b4e82c5c003f2b86a2de5e37a841854d5badd3570f0ec5c0ff6226565788448",
+      "response_schema_hash": "d0b640e3a2290513e02389ed6f7450dcbbdcc4fa5dc42d233981c32a17ce898a"
+    },
+    "/firms/{firm_id}/analytics/worker-month-work-all-firms": {
+      "method": "POST",
+      "request_schema_hash": "62cc703e9864ebd386b153665bc60cfb0b607469861da11d5a9fcce81479c7fa",
+      "response_schema_hash": "591a8ebb967c7a049e6162f8e6701e2b76fa8eaeec41ce9b1b8b7cc8ed532ecd"
+    },
+    "/firms/{firm_id}/analytics/worker-fines-year-total": {
+      "method": "POST",
+      "request_schema_hash": "9097f32b46a77480f5f14b8a6fd4ef9816dcef8038b26f00d10b5767cff5cf0c",
+      "response_schema_hash": "c7cb177e9e50f349e062cc5f155d563915ee103a433eec7793f7c475624dbb7f"
+    },
+    "/firms/{firm_id}/analytics/worker-fines-month-list": {
+      "method": "POST",
+      "request_schema_hash": "1084fd08d0c50cabd6981837fc6d858ad5babfd82c4d8d095bd0f4548195c622",
+      "response_schema_hash": "1a3e585010ec7fdeef5dbc34c8bb09ddf3e42322854f093c600858d7d02d00db"
+    },
+    "/firms/{firm_id}/analytics/worker-fines-year-list-excluding-month": {
+      "method": "POST",
+      "request_schema_hash": "6fbddcba768f1cde79c4357be7bd1da1190bc5c3b4ae4cbfff1564fc5fe5301a",
+      "response_schema_hash": "65c5cf84f15148cc525aa07a40a33f70d717adc22f1b55be44b65d5162aa67ed"
+    },
+    "/firms/{firm_id}/analytics/worker-fines-totals-all-firms": {
+      "method": "POST",
+      "request_schema_hash": "77f9cc108fdb5d1b3a1286ee57ff272f3cff99a202b391592be0ae09307af2b1",
+      "response_schema_hash": "0474b7895a34ba2aaa570297f12df61886ab1a736c51d749b77a9f47d7b4c4be"
+    },
+    "/firms/{firm_id}/analytics/worker-fines-list-all-firms": {
+      "method": "POST",
+      "request_schema_hash": "0af439a57ca57ce0c40a9e7e000e08c6ea3dd3364044fa6c91ef08c7dba4fc12",
+      "response_schema_hash": "929352807e13fb917737041fb3ee3255c483a0c44bdfe10ed169c7072c1599b7"
+    },
+    "/firms/{firm_id}/analytics/worker-absences-list-all-firms": {
+      "method": "POST",
+      "request_schema_hash": "6fb912e408b3103fff4afe8ae164ff91605cd5a8efe5f446ad255c4c36bfde21",
+      "response_schema_hash": "703f945cbb7053b7b643eb3395ea21738ad1f76518c408f548c0d6498d996cf2"
+    }
+  }
+}

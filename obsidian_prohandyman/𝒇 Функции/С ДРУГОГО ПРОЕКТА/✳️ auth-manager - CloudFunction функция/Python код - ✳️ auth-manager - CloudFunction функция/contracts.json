@@ -1,0 +1,337 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "auth-manager contracts",
+  "error_on_mismatch": {
+    "http_status": 426,
+    "code": "OUTDATED_CLIENT_SCHEMA",
+    "message": "Client schema version mismatch. Please update your application."
+  },
+  "endpoints": {
+    "/auth/user/login": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "password"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "password": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"},
+          "phone_number": {"type": "string"},
+          "token": {"type": "string"}
+        }
+      }
+    },
+    "/auth/dispatcher/login": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "password"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "password": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"},
+          "phone_number": {"type": "string"},
+          "token": {"type": "string"}
+        }
+      }
+    },
+    "/auth/user/register": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "password", "full_name"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "password": {"type": "string"},
+          "full_name": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"},
+          "phone_number": {"type": "string"},
+          "token": {"type": "string"}
+        }
+      }
+    },
+    "/auth/dispatcher/register": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "password", "full_name"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "password": {"type": "string"},
+          "full_name": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"},
+          "phone_number": {"type": "string"},
+          "token": {"type": "string"}
+        }
+      }
+    },
+    "/auth/user/resend-code": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"},
+          "phone_number": {"type": "string"}
+        }
+      }
+    },
+    "/auth/dispatcher/resend-code": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"},
+          "phone_number": {"type": "string"}
+        }
+      }
+    },
+    "/auth/user/verify-code": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "code"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "code": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": ["token"],
+        "properties": {
+          "token": {"type": "string"}
+        }
+      }
+    },
+    "/auth/dispatcher/verify-code": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "code"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "code": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": ["token"],
+        "properties": {
+          "token": {"type": "string"}
+        }
+      }
+    },
+    "/auth/user/reset-password": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "new_password"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "new_password": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"},
+          "phone_number": {"type": "string"}
+        }
+      }
+    },
+    "/auth/dispatcher/reset-password": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "new_password"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "new_password": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"},
+          "phone_number": {"type": "string"}
+        }
+      }
+    },
+    "/auth/user/reset-sessions": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "password"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "password": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"}
+        }
+      }
+    },
+    "/auth/dispatcher/reset-sessions": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "phone_number", "password"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "phone_number": {"type": "string"},
+          "password": {"type": "string"}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"}
+        }
+      }
+    }
+  }
+}

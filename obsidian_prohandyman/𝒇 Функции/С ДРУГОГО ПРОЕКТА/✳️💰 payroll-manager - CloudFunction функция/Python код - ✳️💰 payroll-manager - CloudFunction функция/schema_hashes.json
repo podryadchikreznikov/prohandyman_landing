@@ -1,0 +1,46 @@
+{
+  "title": "payroll-manager contracts",
+  "schema_hash_alg": "sha256(json.dumps(schema, sort_keys=True, separators=(',',':'), ensure_ascii=False))",
+  "endpoints": {
+    "/firms/{firm_id}/payroll/deferred/create": {
+      "method": "POST",
+      "request_schema_hash": "6197e98251d204bce91fbaf1ef2f0376188fafec684083e633c5d4a7dba93aea",
+      "response_schema_hash": "aabbef25ab92ad5b9b18dcf9ac1e2933667d1991d7ecf4197f1c0db2612fd4d4"
+    },
+    "/firms/{firm_id}/payroll/cash/create": {
+      "method": "POST",
+      "request_schema_hash": "534c90dbc2c5a54f71b4c0f91eea9f168de2d195400a7ad795c13fa3e0cac98e",
+      "response_schema_hash": "aabbef25ab92ad5b9b18dcf9ac1e2933667d1991d7ecf4197f1c0db2612fd4d4"
+    },
+    "/firms/{firm_id}/payroll/accrual/create": {
+      "method": "POST",
+      "request_schema_hash": "f8a4b13edbf63f76c7036697297e5d7a8c45af2f06025e8bf0295b7e3c7ca55a",
+      "response_schema_hash": "aabbef25ab92ad5b9b18dcf9ac1e2933667d1991d7ecf4197f1c0db2612fd4d4"
+    },
+    "/firms/{firm_id}/payroll/salary/upsert": {
+      "method": "POST",
+      "request_schema_hash": "d51e5986d911d195a63d8575941c7f0ea5813225e184aae820879add129e928b",
+      "response_schema_hash": "243b0dbfe0518aa48f62805c36005a375963c666e4a30ed2235f3013f631ad3b"
+    },
+    "/firms/{firm_id}/payroll/salary/delete": {
+      "method": "POST",
+      "request_schema_hash": "7d8e46c0b418935d6456320b02e9ea5b4fbe63423a5d67a8569e62b6cf47ebd9",
+      "response_schema_hash": "243b0dbfe0518aa48f62805c36005a375963c666e4a30ed2235f3013f631ad3b"
+    },
+    "/firms/{firm_id}/payroll/fines/create": {
+      "method": "POST",
+      "request_schema_hash": "c5b66a1910c164871a04e35f71fb3c07a3e60d7fd73fea8a340e8c89306e4481",
+      "response_schema_hash": "aabbef25ab92ad5b9b18dcf9ac1e2933667d1991d7ecf4197f1c0db2612fd4d4"
+    },
+    "/firms/{firm_id}/payroll/rewards/create": {
+      "method": "POST",
+      "request_schema_hash": "301f0256e19a7246e8b2456594e152e0a28efa108e57cba52eb206637196bb0d",
+      "response_schema_hash": "aabbef25ab92ad5b9b18dcf9ac1e2933667d1991d7ecf4197f1c0db2612fd4d4"
+    },
+    "/firms/{firm_id}/payroll/dispatcher-settlement/create": {
+      "method": "POST",
+      "request_schema_hash": "25c1f2766a76f9284a35734ee925f16f8464d5e630b1461c641474eaace4dadd",
+      "response_schema_hash": "74d7f62657d4c2d59fa95e13d5477273a9c26e897284d73e3697429488ab7729"
+    }
+  }
+}

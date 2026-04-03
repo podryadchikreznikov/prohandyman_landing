@@ -7,29 +7,29 @@ class LandingFooter extends StatelessWidget {
   static const _contacts = [
     '+7 (999) 497-85-32',
     '+7 (343) 521-55-09',
-    'info@MTL-servis.ru',
+    'info@подрядчик.com',
     'Пн-Вс: с 08:00 до 20:00',
-    '620078, г. Екатеринбург, ул. Данилы Зверева, 31 s',
+    'г. Екатеринбург',
   ];
 
   static const _companyInfo = [
-    'ИНН 331602832171',
-    'ОГРН 3043316117500051',
     'ИП Мартынов Тимур Львович',
   ];
 
-  static const _services = [
-    'Ремонт стиральных машин',
-    'Ремонт посудомоечных машин',
-    'Ремонт варочных панелей и духовых шкафов',
-    'Ремонт холодильников',
-    'Ремонт водонагревателей',
+  static const _services = <String>[
+    'Сборка гостиничной и ресторанной мебели',
+    'Сборка мебели по дизайн-проектам',
+    'Сборка мебели для учреждений',
+    'Сборка металлической мебели',
+    'Сборка мебели для ЖК и застройщиков',
+    'Торговая мебель и складские системы',
   ];
 
   static const _navLinks = [
     'Главная',
+    'Услуги',
     'Цены',
-    'Отзывы',
+    'Партнеры',
     'О компании',
     'Контакты',
   ];
@@ -63,7 +63,7 @@ class LandingFooter extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
-                  vertical: 32,
+                  vertical: 24,
                 ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -141,13 +141,13 @@ class LandingFooter extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         topContent,
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 24),
                         Divider(
                           color:
                               AppThemeTokens.textLightMuted.withOpacity(0.6),
                           height: 1,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
                         _BottomBar(
                           baseTextStyle: baseTextStyle,
                           highlightStyle: baseTextStyle.copyWith(
@@ -162,7 +162,7 @@ class LandingFooter extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 32,
+              height: 20,
               width: double.infinity,
               child: ColoredBox(color: footerBottomBackground),
             ),
@@ -290,18 +290,10 @@ class _BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const copyrightText =
-        '© MTL СЕРВИСНЫЙ ЦЕНТР 2025. Все права защищены.';
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final maxWidth = constraints.maxWidth;
         final isWide = maxWidth >= 640;
-
-        final left = Text(
-          copyrightText,
-          style: baseTextStyle,
-        );
 
         final right = RichText(
           text: TextSpan(
@@ -311,24 +303,13 @@ class _BottomBar extends StatelessWidget {
         );
 
         if (isWide) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(child: left),
-              const SizedBox(width: 24),
-              right,
-            ],
+          return Align(
+            alignment: Alignment.centerRight,
+            child: right,
           );
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            left,
-            const SizedBox(height: 8),
-            right,
-          ],
-        );
+        return right;
       },
     );
   }

@@ -20,6 +20,8 @@ BASE_URL = os.getenv(
 
 EXPECTED_SUCCESS_STATUS = int(os.getenv("CALLBACK_REQUEST_EXPECTED_STATUS", "200"))
 SMARTCAPTCHA_CLIENT_KEY_DEFAULT = "ysc1_JMJcAAfPce436nv20qcDpdMChASo4m5y2phUgeFLbfc3400a"
+CALLBACK_REQUEST_SCHEMA_HASH = "81a26973e17bc344098ca06efc0fd2495d8bd846ea7979e9c74a989f143fa819"
+CALLBACK_RESPONSE_SCHEMA_HASH = "2d9389fd413dd30152e0e565cdc0b9fedbba342f7b5983973d572fcef4cb7871"
 
 TICK = Fore.GREEN + "✓" + Style.RESET_ALL
 CROSS = Fore.RED + "✗" + Style.RESET_ALL
@@ -34,11 +36,14 @@ def _pretty(data: Any) -> str:
         return str(data)
 
 
-def make_headers(token: Optional[str]) -> Dict[str, str]:
+def make_headers(token: Optional[str], *, with_contract_hashes: bool = True) -> Dict[str, str]:
     headers = {
         "Content-Type": "application/json",
         "X-Correlation-Id": str(uuid.uuid4()),
     }
+    if with_contract_hashes:
+        headers["X-Request-Schema-Hash"] = CALLBACK_REQUEST_SCHEMA_HASH
+        headers["X-Response-Schema-Hash"] = CALLBACK_RESPONSE_SCHEMA_HASH
     if token:
         headers["SmartCaptcha-Token"] = token
     return headers
@@ -50,6 +55,7 @@ def run_step(
     payload: Optional[Dict[str, Any]],
     expected_statuses: List[int],
     captcha_token: Optional[str],
+    with_contract_hashes: bool = True,
 ) -> Optional[Dict[str, Any]]:
     url = f"{BASE_URL}{path}"
     print(f"{Style.BRIGHT}→ {title}{Style.RESET_ALL}")
@@ -57,7 +63,10 @@ def run_step(
     if payload is not None:
         print(Fore.BLUE + f"   body = {_pretty(payload)}")
 
-    kwargs: Dict[str, Any] = {"headers": make_headers(captcha_token), "timeout": 20}
+    kwargs: Dict[str, Any] = {
+        "headers": make_headers(captcha_token, with_contract_hashes=with_contract_hashes),
+        "timeout": 20,
+    }
     if payload is not None:
         kwargs["json"] = payload
 
@@ -231,7 +240,20 @@ if __name__ == "__main__":
         captcha_token=None,
     )
 
-    # 1) Проверка валидации (нет phone/email) — 400 от функции callback-request
+    # 1) Проверка contract-hash слоя — 426 от функции callback-request
+    #    Для этого шага НУЖЕН СВЕЖИЙ ТОКЕН
+    print(Fore.CYAN + "\n--- Получение токена для теста contract-hash ---")
+    token_for_contract_test = obtain_smartcaptcha_token()
+    run_step(
+        "Проверка contract-hash (без заголовков hashes)",
+        "/callback/request",
+        payload={"comment": "тест"},
+        expected_statuses=[426],
+        captcha_token=token_for_contract_test,
+        with_contract_hashes=False,
+    )
+
+    # 2) Проверка валидации (нет phone/email) — 400 от функции callback-request
     #    Для этого шага НУЖЕН СВЕЖИЙ ТОКЕН
     print(Fore.CYAN + "\n--- Получение токена для теста валидации ---")
     token_for_validation_test = obtain_smartcaptcha_token()
@@ -245,7 +267,7 @@ if __name__ == "__main__":
     if step1_result is None:
         sys.exit(f"{CROSS} критическая ошибка проверки валидации")
 
-    # 2) Успешный кейс: валидные данные + токен
+    # 3) Успешный кейс: валидные данные + токен
     #    Для этого шага НУЖЕН ЕЩЕ ОДИН СВЕЖИЙ ТОКЕН
     print(Fore.CYAN + "\n--- Получение токена для успешного теста ---")
     token_for_success_test = obtain_smartcaptcha_token()

@@ -68,7 +68,7 @@ class AppShell extends StatelessWidget {
       icon: Icons.settings_outlined,
       tooltip: 'Настройки',
       onPressed: (context) {
-        context.router.push(const LandingHomeRoute());
+        context.router.navigate(const LandingHomeRoute());
       },
     ),
   ];

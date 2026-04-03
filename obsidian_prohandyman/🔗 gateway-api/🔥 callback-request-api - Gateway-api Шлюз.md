@@ -17,7 +17,7 @@ info:
   description: |
     API принимает заявки на обратный звонок. Каждое обращение проверяется
     через Cloud Function-авторизатор (smart-captcha-gate) и затем пересылается
-    в функцию callback-request.
+    в функцию callback-request, которая отправляет письмо владельцу сайта.
 
 servers:
   - url: https://d5dii40lrt3h821egn3i.fary004x.apigw.yandexcloud.net
@@ -31,6 +31,8 @@ x-yc-apigateway:
       - Content-Type
       - SmartCaptcha-Token
       - X-Captcha-Token
+      - X-Request-Schema-Hash
+      - X-Response-Schema-Hash
       - X-Correlation-Id
     credentials: true
     maxAge: 3600
@@ -74,6 +76,9 @@ paths:
       security:
         - smartCaptchaAuth: []
 
+      # Функция callback-request требует contract-hash заголовки:
+      # X-Request-Schema-Hash и X-Response-Schema-Hash.
+
       requestBody:
         required: true
         content:
@@ -97,13 +102,13 @@ paths:
 
       responses:
         "200":
-          description: "Заявка принята и SMS отправлена руководителю"
+          description: "Заявка принята и email отправлен владельцу"
         "400":
           description: "Некорректный JSON или отсутствуют обязательные поля (email/phone_number)"
         "403":
           description: "SmartCaptcha не пройдена или авторизация отклонена авторизатором"
         "500":
-          description: "Ошибка отправки SMS или внутренняя ошибка сервиса"
+          description: "Ошибка отправки email или внутренняя ошибка сервиса"
 
       x-yc-apigateway-integration:
         type: cloud_functions

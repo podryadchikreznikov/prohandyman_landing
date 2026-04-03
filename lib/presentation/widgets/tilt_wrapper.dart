@@ -34,6 +34,12 @@ class TiltWrapper extends StatefulWidget {
     this.globalPointerMode = false,
     this.globalPointerController,
     this.invertGlobalPointer = false,
+    this.clipChild = true,
+    this.enableHoverScale = false,
+    this.hoverScale = 1.03,
+    this.enableHoverShadow = false,
+    this.hoverShadowColor,
+    this.enableBorder = true,
   });
 
   final Widget child;
@@ -45,6 +51,12 @@ class TiltWrapper extends StatefulWidget {
   final bool globalPointerMode;
   final TiltGlobalPointerController? globalPointerController;
   final bool invertGlobalPointer;
+  final bool clipChild;
+  final bool enableHoverScale;
+  final double hoverScale;
+  final bool enableHoverShadow;
+  final Color? hoverShadowColor;
+  final bool enableBorder;
 
   @override
   State<TiltWrapper> createState() => _TiltWrapperState();
@@ -54,6 +66,7 @@ class _TiltWrapperState extends State<TiltWrapper> {
   async.StreamController<TiltStreamModel>? _globalStream;
   Offset? _lastGlobalPointer;
   bool _listenerAttached = false;
+  bool _isHovered = false;
 
   bool get _useGlobalPointer =>
       widget.globalPointerMode && widget.globalPointerController != null;
@@ -164,8 +177,13 @@ class _TiltWrapperState extends State<TiltWrapper> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final radius = widget.borderRadius ?? BorderRadius.circular(12);
-
-    return Tilt(
+    final Widget child = widget.clipChild
+        ? ClipRRect(
+            borderRadius: radius,
+            child: widget.child,
+          )
+        : widget.child;
+    Widget contents = Tilt(
       tiltConfig: _buildTiltConfig(),
       tiltStreamController: _useGlobalPointer ? _globalStream : null,
       lightConfig: widget.enableLight
@@ -177,15 +195,63 @@ class _TiltWrapperState extends State<TiltWrapper> {
           : const LightConfig(disable: true),
       shadowConfig: const ShadowConfig(disable: true),
       borderRadius: radius,
-      border: Border.all(
-        color: theme.colorScheme.outline.withOpacity(0.12),
-        width: 1.5,
-        strokeAlign: BorderSide.strokeAlignOutside,
-      ),
-      child: ClipRRect(
-        borderRadius: radius,
-        child: widget.child,
-      ),
+      border: widget.enableBorder
+          ? Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.12),
+              width: 1.5,
+              strokeAlign: BorderSide.strokeAlignOutside,
+            )
+          : null,
+      child: child,
+    );
+
+    if (widget.enableHoverShadow) {
+      final shadowColor =
+          widget.hoverShadowColor ?? theme.shadowColor.withOpacity(0.25);
+      final boxShadow = _isHovered
+          ? [
+              BoxShadow(
+                color: shadowColor,
+                blurRadius: 24,
+                offset: const Offset(0, 16),
+              ),
+            ]
+          : null;
+
+      contents = DecoratedBox(
+        decoration: BoxDecoration(
+          boxShadow: boxShadow,
+        ),
+        child: contents,
+      );
+    }
+
+    if (widget.enableHoverScale) {
+      final scale = _isHovered ? widget.hoverScale : 1.0;
+      contents = AnimatedScale(
+        scale: scale,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
+        child: contents,
+      );
+    }
+
+    if (!widget.enableHoverScale && !widget.enableHoverShadow) {
+      return contents;
+    }
+
+    return MouseRegion(
+      onEnter: (_) {
+        if (!_isHovered) {
+          setState(() => _isHovered = true);
+        }
+      },
+      onExit: (_) {
+        if (_isHovered) {
+          setState(() => _isHovered = false);
+        }
+      },
+      child: contents,
     );
   }
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html' as html;
 import 'dart:js_util' as js_util;
 
@@ -16,6 +17,30 @@ class SmartCaptchaWebService implements SmartCaptchaService {
   final Talker _talker;
 
   SmartCaptchaWebService(this._talker);
+
+  Future<void> _waitForJsBridge() async {
+    const timeout = Duration(seconds: 5);
+    const interval = Duration(milliseconds: 50);
+    final start = DateTime.now();
+
+    while (true) {
+      final hasInit = js_util.hasProperty(html.window, 'initSmartCaptcha');
+      if (hasInit) {
+        return;
+      }
+
+      if (DateTime.now().difference(start) > timeout) {
+        _talker.logCustom(
+          CaptchaLog('SmartCaptcha bridge not loaded within timeout'),
+        );
+        throw const SmartCaptchaException(
+          'SmartCaptcha bridge script not loaded',
+        );
+      }
+
+      await Future.delayed(interval);
+    }
+  }
 
   @override
   bool get isSupported => true;
@@ -34,20 +59,38 @@ class SmartCaptchaWebService implements SmartCaptchaService {
       CaptchaLog('Init SmartCaptcha (invisible mode)'),
     );
 
+    await _waitForJsBridge();
     js_util.callMethod(html.window, 'initSmartCaptcha', [siteKey]);
     _messageSub = html.window.onMessage.listen(_handleMessage);
     _initialized = true;
   }
 
   void _handleMessage(html.MessageEvent event) {
-    final data = event.data;
-    if (data is! Map) {
+    final rawData = event.data;
+    Map? decoded;
+    if (rawData is String) {
+      try {
+        final decodedRaw = jsonDecode(rawData);
+        if (decodedRaw is Map) {
+          decoded = decodedRaw;
+        }
+      } on FormatException {
+        return;
+      }
+    } else if (rawData is Map) {
+      decoded = rawData;
+    }
+    if (decoded == null) {
       return;
     }
-    final type = data['type']?.toString();
+    if (decoded['channel']?.toString() != 'SMARTCAPTCHA_BRIDGE') {
+      return;
+    }
+
+    final type = decoded['type']?.toString();
     switch (type) {
       case 'SMARTCAPTCHA_TOKEN':
-        final token = data['token']?.toString();
+        final token = decoded['token']?.toString();
         if (token != null &&
             _currentCompleter != null &&
             !_currentCompleter!.isCompleted) {

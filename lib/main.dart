@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:talker/talker.dart';
 
 import 'core/constants/constants.dart';
@@ -14,6 +15,8 @@ Future<void> main() async {
   await setupLocator();
 
   if (kIsWeb) {
+    usePathUrlStrategy();
+
     final captchaService = sl<SmartCaptchaService>();
     if (captchaService.isSupported && !captchaService.isInitialized) {
       await captchaService.init(siteKey: AppConfig.smartCaptchaSiteKey);

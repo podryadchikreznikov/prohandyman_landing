@@ -1,7 +1,7 @@
 import json, sys, uuid, time
 from typing import Any, Dict, Optional
 
-_DEFAULT_REDACTIONS = {"authorization","x-forwarded-authorization","proxy-authorization","cookie","set-cookie","x-api-key"}
+_DEFAULT_REDACTIONS = {"authorization","x-forwarded-authorization","proxy-authorization","cookie","set-cookie","x-api-key","smartcaptcha-token","x-captcha-token"}
 
 def _redact(h: Dict[str, Any], redactions=_DEFAULT_REDACTIONS) -> Dict[str, Any]:
     return {k: ("<redacted>" if isinstance(v, str) and k.lower() in redactions else v) for k,v in (h or {}).items()}

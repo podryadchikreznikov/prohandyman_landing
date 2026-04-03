@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "prohandyman_landing" "\0"
+            VALUE "CompanyName", "ProHandyman" "\0"
+            VALUE "FileDescription", "ProHandyman — prohandyman.ru" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "prohandyman_landing" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
+            VALUE "InternalName", "ProHandyman" "\0"
+            VALUE "LegalCopyright", "Автор: Reznikov" "\0"
             VALUE "OriginalFilename", "prohandyman_landing.exe" "\0"
-            VALUE "ProductName", "prohandyman_landing" "\0"
+            VALUE "ProductName", "ProHandyman" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

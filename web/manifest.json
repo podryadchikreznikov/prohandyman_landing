@@ -1,11 +1,11 @@
 {
-    "name": "prohandyman_landing",
-    "short_name": "prohandyman_landing",
+    "name": "ProHandyman",
+    "short_name": "ProHandyman",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Сборка мебели в Екатеринбурге",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

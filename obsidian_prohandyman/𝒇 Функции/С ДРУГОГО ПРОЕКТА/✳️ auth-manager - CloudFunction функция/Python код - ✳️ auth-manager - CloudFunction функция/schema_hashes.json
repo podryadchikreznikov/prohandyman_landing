@@ -1,0 +1,66 @@
+{
+  "title": "auth-manager contracts",
+  "schema_hash_alg": "sha256(json.dumps(schema, sort_keys=True, separators=(',',':'), ensure_ascii=False))",
+  "endpoints": {
+    "/auth/user/login": {
+      "method": "POST",
+      "request_schema_hash": "694989582b7fd2cb2d628331151587f0f8d0b635d7ea158dbd36a4dbacc84d8b",
+      "response_schema_hash": "ace34a1eb9605abc6a6a0f21f62f22ea6f5fa1f42dd5307d3a30751c84db1708"
+    },
+    "/auth/dispatcher/login": {
+      "method": "POST",
+      "request_schema_hash": "694989582b7fd2cb2d628331151587f0f8d0b635d7ea158dbd36a4dbacc84d8b",
+      "response_schema_hash": "ace34a1eb9605abc6a6a0f21f62f22ea6f5fa1f42dd5307d3a30751c84db1708"
+    },
+    "/auth/user/register": {
+      "method": "POST",
+      "request_schema_hash": "97253bfc2924a6ed17a8f49bb98ca0b0b0b579ebf7a5c268bcf12e3920b9ec79",
+      "response_schema_hash": "ace34a1eb9605abc6a6a0f21f62f22ea6f5fa1f42dd5307d3a30751c84db1708"
+    },
+    "/auth/dispatcher/register": {
+      "method": "POST",
+      "request_schema_hash": "97253bfc2924a6ed17a8f49bb98ca0b0b0b579ebf7a5c268bcf12e3920b9ec79",
+      "response_schema_hash": "ace34a1eb9605abc6a6a0f21f62f22ea6f5fa1f42dd5307d3a30751c84db1708"
+    },
+    "/auth/user/resend-code": {
+      "method": "POST",
+      "request_schema_hash": "5fb0844f4905d7036d2ee016711c74308bb813d6c3307dab349e6f5128bfe3ad",
+      "response_schema_hash": "d50202c7de8efae3c5b489dd9cba8b415414847f5604fb94d121c3eba701527c"
+    },
+    "/auth/dispatcher/resend-code": {
+      "method": "POST",
+      "request_schema_hash": "5fb0844f4905d7036d2ee016711c74308bb813d6c3307dab349e6f5128bfe3ad",
+      "response_schema_hash": "d50202c7de8efae3c5b489dd9cba8b415414847f5604fb94d121c3eba701527c"
+    },
+    "/auth/user/verify-code": {
+      "method": "POST",
+      "request_schema_hash": "7693179c83cdbfc920ff0095941fba2be101c7dc1a1f5a2f02fe10d1c4cd3b7a",
+      "response_schema_hash": "d5545f2d488eec54d7a2fa05f1ffa1bd84768e9024eb25f05c4c6461c7454240"
+    },
+    "/auth/dispatcher/verify-code": {
+      "method": "POST",
+      "request_schema_hash": "7693179c83cdbfc920ff0095941fba2be101c7dc1a1f5a2f02fe10d1c4cd3b7a",
+      "response_schema_hash": "d5545f2d488eec54d7a2fa05f1ffa1bd84768e9024eb25f05c4c6461c7454240"
+    },
+    "/auth/user/reset-password": {
+      "method": "POST",
+      "request_schema_hash": "d7d6fe0fe2e65ba3537acd189e9f07c5b419f733f7eec798dcef83148d7af26a",
+      "response_schema_hash": "d50202c7de8efae3c5b489dd9cba8b415414847f5604fb94d121c3eba701527c"
+    },
+    "/auth/dispatcher/reset-password": {
+      "method": "POST",
+      "request_schema_hash": "d7d6fe0fe2e65ba3537acd189e9f07c5b419f733f7eec798dcef83148d7af26a",
+      "response_schema_hash": "d50202c7de8efae3c5b489dd9cba8b415414847f5604fb94d121c3eba701527c"
+    },
+    "/auth/user/reset-sessions": {
+      "method": "POST",
+      "request_schema_hash": "694989582b7fd2cb2d628331151587f0f8d0b635d7ea158dbd36a4dbacc84d8b",
+      "response_schema_hash": "d803b8cd6aef950bd59c7467fe8ce4d612d0730f5b0270a521b792f7ef6e4550"
+    },
+    "/auth/dispatcher/reset-sessions": {
+      "method": "POST",
+      "request_schema_hash": "694989582b7fd2cb2d628331151587f0f8d0b635d7ea158dbd36a4dbacc84d8b",
+      "response_schema_hash": "d803b8cd6aef950bd59c7467fe8ce4d612d0730f5b0270a521b792f7ef6e4550"
+    }
+  }
+}

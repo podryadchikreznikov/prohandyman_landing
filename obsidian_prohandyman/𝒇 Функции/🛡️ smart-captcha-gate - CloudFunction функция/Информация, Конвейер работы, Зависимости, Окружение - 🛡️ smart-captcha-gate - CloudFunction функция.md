@@ -11,11 +11,10 @@
 
 На входе:
 	-> `event.headers`: ищется токен капчи в заголовках `SmartCaptcha-Token` или `X-Captcha-Token`.
-	-> резервно в `body` (JSON): поле `captcha_token`.
 	-> IP клиента извлекается из `event.requestContext.identity.sourceIp` или `event.requestContext.http.sourceIp`.
 
 Внутренняя работа:
-	-> Извлечение токена (заголовки → тело).
+	-> Извлечение токена только из заголовков.
 	-> Вызов верификации SmartCaptcha:
 		GET `https://smartcaptcha.yandexcloud.net/validate?secret=<SERVER_KEY>&token=<TOKEN>&ip=<IP>`
 	-> Анализ ответа: `{ "status": "ok" }` — успех, иначе — отказ.
@@ -30,10 +29,10 @@
 
 - Необходимые утилиты:
 	- `utils/util_log/logger.py` — JsonLogger для логирования
-	- `utils/util_json/` — loads_safe при необходимости
 - Переменные окружения:
 	- `SMARTCAPTCHA_SERVER_KEY` — серверный ключ SmartCaptcha (из раздела "🧩 Yandex SmartCaptcha")
 
 Примечания:
 - Токен рекомендуется передавать в заголовке `SmartCaptcha-Token`.
 - IP можно опускать — SmartCaptcha валидация корректна и без него, но при наличии `sourceIp` он будет добавлен.
+- Токен из body не используется.

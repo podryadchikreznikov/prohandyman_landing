@@ -1,37 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ProHandyman — сборка мебели, бытовой ремонт и выездной мастер в Екатеринбурге.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="theme-color" content="#f7f4ef">
+  <link rel="canonical" href="https://xn--d1aamiqfj1dwd.com/">
 
-  <!-- iOS meta tags & icons -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ProHandyman">
+  <meta property="og:title" content="ProHandyman">
+  <meta property="og:description" content="Сборка мебели, бытовой ремонт и выездной мастер в Екатеринбурге.">
+  <meta property="og:url" content="https://xn--d1aamiqfj1dwd.com/">
+  <meta property="og:image" content="/assets/assets/prohandyman-logo-png.png">
+  <meta property="og:image:alt" content="ProHandyman">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ProHandyman">
+  <meta name="twitter:description" content="Сборка мебели, бытовой ремонт и выездной мастер в Екатеринбурге.">
+  <meta name="twitter:image" content="/assets/assets/prohandyman-logo-png.png">
+
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="prohandyman_landing">
+  <meta name="apple-mobile-web-app-title" content="ProHandyman">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>prohandyman_landing</title>
+  <link rel="icon" type="image/png" href="assets/assets/prohandyman-logo-png.png">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="extensions/smart_captcha/smart_captcha.css">
+
+  <title>ProHandyman</title>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://xn--d1aamiqfj1dwd.com/#organization",
+        "name": "ProHandyman",
+        "url": "https://xn--d1aamiqfj1dwd.com/",
+        "logo": "https://xn--d1aamiqfj1dwd.com/assets/assets/prohandyman-logo-png.png",
+        "email": "info@подрядчик.com",
+        "telephone": [
+          "+79994978532",
+          "+73435215509"
+        ],
+        "areaServed": "Екатеринбург",
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": "info@подрядчик.com",
+            "telephone": "+79994978532",
+            "availableLanguage": [
+              "ru"
+            ]
+          },
+          {
+            "@type": "ContactPoint",
+            "contactType": "sales",
+            "email": "info@подрядчик.com",
+            "telephone": "+73435215509",
+            "availableLanguage": [
+              "ru"
+            ]
+          }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://xn--d1aamiqfj1dwd.com/#website",
+        "url": "https://xn--d1aamiqfj1dwd.com/",
+        "name": "ProHandyman",
+        "publisher": {
+          "@id": "https://xn--d1aamiqfj1dwd.com/#organization"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #f7f4ef;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    #bootstrap-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.97), rgba(247,244,239,0.98)),
+        #f7f4ef;
+      transition: opacity 180ms ease, visibility 180ms ease;
+    }
+
+    #bootstrap-loader.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .bootstrap-loader__content {
+      display: grid;
+      gap: 20px;
+      justify-items: center;
+      padding: 24px 28px;
+    }
+
+    .bootstrap-loader__logo {
+      width: min(42vw, 220px);
+      max-width: 220px;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      image-rendering: auto;
+      filter: saturate(0.96) contrast(1.02);
+    }
+
+    .bootstrap-loader__line {
+      width: min(52vw, 260px);
+      height: 2px;
+      background: #7b0f19;
+    }
+
+    .bootstrap-loader__caption {
+      margin: 0;
+      font: 600 12px/1.2 Arial, sans-serif;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #241f1f;
+    }
+  </style>
+
   <script
     src="https://smartcaptcha.yandexcloud.net/captcha.js"
     defer
@@ -42,6 +155,30 @@
   ></script>
 </head>
 <body>
+  <div id="bootstrap-loader" aria-live="polite" aria-busy="true">
+    <div class="bootstrap-loader__content">
+      <img
+        class="bootstrap-loader__logo"
+        src="/assets/assets/prohandyman-logo-png.png"
+        alt="ProHandyman"
+      >
+      <div class="bootstrap-loader__line"></div>
+      <p class="bootstrap-loader__caption">Загрузка</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const loader = document.getElementById('bootstrap-loader');
+      const hideLoader = function () {
+        if (!loader) return;
+        loader.classList.add('is-hidden');
+        window.removeEventListener('flutter-first-frame', hideLoader);
+      };
+
+      window.addEventListener('flutter-first-frame', hideLoader);
+    })();
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

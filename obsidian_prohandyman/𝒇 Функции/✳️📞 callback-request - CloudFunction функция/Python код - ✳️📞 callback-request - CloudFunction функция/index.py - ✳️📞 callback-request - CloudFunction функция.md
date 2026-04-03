@@ -3,22 +3,27 @@
 from __future__ import annotations
 
 import json
+import html
 import os
-import re
+import smtplib
+import ssl
 import traceback
+from email.message import EmailMessage
+from email.utils import formataddr
+from pathlib import Path
 from typing import Any, Dict, Optional
-
-import requests
 
 from utils.util_log.logger import JsonLogger
 from utils.util_http.cors import cors_headers, handle_preflight
 from utils.util_http.request import parse_event, EventParseError
-from utils.util_http.response import ok, bad_request, server_error
+from utils.util_http.response import ok, bad_request, server_error, json_response
 from utils.util_errors.exceptions import Internal
-from utils.util_errors.to_response import app_error_to_http
 from utils.util_sms.sms_sender import validate_phone_number
 
 logger = JsonLogger()
+CONTRACTS_PATH = Path(__file__).with_name("contracts.json")
+_CONTRACTS_CACHE: Optional[Dict[str, str]] = None
+OUTDATED_CLIENT_SCHEMA_MESSAGE = "Client schema version mismatch. Please update your application."
 
 BASE_HEADERS = {
     **cors_headers(allow_origin=os.getenv("CORS_ALLOW_ORIGIN", "*")),
@@ -42,6 +47,111 @@ def _require_env(name: str) -> str:
     return v
 
 
+def _get_header_ci(headers: Dict[str, Any], name: str) -> Optional[str]:
+    if not headers:
+        return None
+    lname = name.lower()
+    for key, value in headers.items():
+        if isinstance(key, str) and key.lower() == lname:
+            return value
+    return None
+
+
+def _normalize_email_address(address: str) -> str:
+    cleaned = (address or "").strip()
+    if not cleaned or "@" not in cleaned:
+        return cleaned
+    local_part, domain = cleaned.rsplit("@", 1)
+    try:
+        domain_ascii = domain.encode("idna").decode("ascii")
+    except Exception:
+        return cleaned
+    return f"{local_part}@{domain_ascii}"
+
+
+def _format_request_text(event: Dict[str, Any], req: Dict[str, Any]) -> str:
+    http_ctx = ((event.get("requestContext") or {}).get("http") or {}) if event else {}
+    snapshot = {
+        "method": http_ctx.get("method") or (event or {}).get("httpMethod"),
+        "path": http_ctx.get("path") or (event or {}).get("path"),
+        "headers": logger.redact_headers((event or {}).get("headers") or {}),
+        "query": req.get("query") or {},
+        "path_params": req.get("path_params") or {},
+        "action": req.get("action"),
+        "body_text": req.get("body_text"),
+        "body_dict": req.get("body_dict") or {},
+        "isBase64Encoded": bool((event or {}).get("isBase64Encoded")),
+        "requestContext": (event or {}).get("requestContext") or {},
+    }
+    return json.dumps(snapshot, ensure_ascii=False, indent=2, default=str)
+
+
+def _load_contracts() -> Dict[str, str]:
+    global _CONTRACTS_CACHE
+    if _CONTRACTS_CACHE is not None:
+        return _CONTRACTS_CACHE
+
+    try:
+        raw = CONTRACTS_PATH.read_text(encoding="utf-8")
+        data = json.loads(raw)
+        request_schema_hash = str(data["request_schema_hash"]).strip()
+        response_schema_hash = str(data["response_schema_hash"]).strip()
+        error_on_mismatch = data.get("error_on_mismatch") or {}
+        mismatch_message = str(error_on_mismatch.get("message") or OUTDATED_CLIENT_SCHEMA_MESSAGE).strip()
+    except Exception as exc:
+        logger.error(
+            "callback_request.contract_config_error",
+            error=str(exc),
+            trace=traceback.format_exc(),
+            contract_file=str(CONTRACTS_PATH),
+        )
+        raise Internal("Service configuration error")
+
+    if not request_schema_hash or not response_schema_hash:
+        logger.error(
+            "callback_request.contract_config_error",
+            contract_file=str(CONTRACTS_PATH),
+            error="Missing request_schema_hash/response_schema_hash",
+        )
+        raise Internal("Service configuration error")
+
+    _CONTRACTS_CACHE = {
+        "request_schema_hash": request_schema_hash,
+        "response_schema_hash": response_schema_hash,
+        "mismatch_message": mismatch_message or OUTDATED_CLIENT_SCHEMA_MESSAGE,
+    }
+    return _CONTRACTS_CACHE
+
+
+def _contract_mismatch_response() -> Dict[str, Any]:
+    contracts = _load_contracts()
+    payload = {
+        "error": {
+            "code": "OUTDATED_CLIENT_SCHEMA",
+            "message": contracts["mismatch_message"],
+        }
+    }
+    return _with_base_headers(json_response(426, payload))
+
+
+def _validate_contract_hashes(headers: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    contracts = _load_contracts()
+    request_schema_hash = _get_header_ci(headers, "X-Request-Schema-Hash")
+    response_schema_hash = _get_header_ci(headers, "X-Response-Schema-Hash")
+
+    if request_schema_hash != contracts["request_schema_hash"] or response_schema_hash != contracts["response_schema_hash"]:
+        logger.warn(
+            "callback_request.contract_mismatch",
+            request_schema_hash=request_schema_hash,
+            response_schema_hash=response_schema_hash,
+            expected_request_schema_hash=contracts["request_schema_hash"],
+            expected_response_schema_hash=contracts["response_schema_hash"],
+        )
+        return _contract_mismatch_response()
+
+    return None
+
+
 def _build_message(
     user_name: Optional[str],
     comment: Optional[str],
@@ -60,219 +170,181 @@ def _build_message(
     return "\n".join(parts)
 
 
-# Официальные коды ошибок SMSЦЕНТР (1–9)
-# https://smsc.ru / документация (или их зеркала)
-SMSC_ERROR_DESCRIPTIONS: Dict[int, str] = {
-    1: "Ошибка в параметрах.",
-    2: (
-        "Неверный логин или пароль, либо отправка с IP-адреса, "
-        "не входящего в список разрешённых."
-    ),
-    3: "Недостаточно средств на счёте клиента.",
-    4: "IP-адрес временно заблокирован из-за частых ошибок в запросах.",
-    5: "Неверный формат даты.",
-    6: (
-        "Сообщение запрещено (по тексту или по имени отправителя), "
-        "либо массовые/рекламные сообщения без договора."
-    ),
-    7: "Неверный формат номера телефона.",
-    8: "Сообщение на указанный номер не может быть доставлено.",
-    9: (
-        "Слишком много одинаковых запросов или слишком много "
-        "одновременных запросов (too many concurrent requests)."
-    ),
-}
+def _build_html_message(
+    user_name: Optional[str],
+    comment: Optional[str],
+    email: Optional[str],
+    phone_e164: Optional[str],
+) -> str:
+    def _cell(value: Optional[str]) -> str:
+        return html.escape(value or "—")
+
+    rows = [
+        ("Имя", user_name),
+        ("Комментарий", comment),
+        ("Email", email),
+        ("Телефон", f"+{phone_e164}" if phone_e164 else None),
+    ]
+    rows_html = "\n".join(
+        f"""
+        <tr>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;background:#f8fafc;font-weight:600;">{html.escape(label)}</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">{_cell(value)}</td>
+        </tr>
+        """
+        for label, value in rows
+        if value
+    )
+    if not rows_html:
+        rows_html = """
+        <tr>
+            <td colspan="2" style="padding:12px;">Без дополнительных данных.</td>
+        </tr>
+        """
+
+    return f"""
+    <html>
+      <body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;color:#111827;">
+        <div style="max-width:680px;margin:0 auto;padding:24px;">
+          <div style="background:#ffffff;border:1px solid #e5e7eb;padding:24px;">
+            <h2 style="margin:0 0 12px 0;">Новая заявка с сайта</h2>
+            <p style="margin:0 0 16px 0;line-height:1.5;">
+              На сайте подрядчик.com оставили заявку на обратный звонок.
+            </p>
+            <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;">
+              {rows_html}
+            </table>
+          </div>
+        </div>
+      </body>
+    </html>
+    """
 
 
-class SMSCError(Exception):
-    """Логическая ошибка на стороне SMSC (правильный HTTP, но ошибка в ответе)."""
+def _build_email_message(
+    recipient_email: str,
+    sender_email: str,
+    sender_name: str,
+    subject: str,
+    user_name: Optional[str],
+    comment: Optional[str],
+    email: Optional[str],
+    phone_e164: Optional[str],
+) -> EmailMessage:
+    plain_text = _build_message(user_name, comment, email, phone_e164)
+    html_text = _build_html_message(user_name, comment, email, phone_e164)
+    safe_sender_email = _normalize_email_address(sender_email)
+    safe_recipient_email = _normalize_email_address(recipient_email)
 
-    def __init__(self, message: str, code: Optional[int] = None, technical_desc: Optional[str] = None):
-        super().__init__(message)
-        self.code = code
-        self.technical_desc = technical_desc
-
-
-def _normalize_error_code(value: Any) -> Optional[int]:
-    if value is None:
-        return None
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
-
-
-def _build_smsc_error_message(code: Optional[int], desc: Optional[str]) -> str:
-    # Человекочитаемое сообщение на основе официального списка и текстового описания
-    parts = []
-    if code is not None:
-        parts.append(f"код {code}")
-    human = SMSC_ERROR_DESCRIPTIONS.get(code) if code is not None else None
-    if human:
-        parts.append(human.rstrip("."))
-    if desc and (not human or desc.strip() not in human):
-        parts.append(desc.strip())
-    if not parts:
-        return "Неизвестная ошибка SMSC."
-    # Склеиваем, гарантируя точку в конце
-    msg = ": ".join([parts[0], " ".join(parts[1:])]) if len(parts) > 1 else parts[0]
-    if not msg.endswith("."):
-        msg += "."
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = formataddr((sender_name, safe_sender_email))
+    msg["To"] = safe_recipient_email
+    if email:
+        msg["Reply-To"] = email
+    msg["X-Entity-Ref-ID"] = email or phone_e164 or "callback-request"
+    msg.set_content(plain_text)
+    msg.add_alternative(html_text, subtype="html")
     return msg
 
 
-def _parse_plain_error_body(body: str) -> Optional[SMSCError]:
-    """
-    Пытается распарсить текстовый ответ вида:
-    'ERROR = N (описание)' или 'ERROR=N (описание)'.
-    Если удаётся — возвращает SMSCError, иначе None.
-    """
-    text = (body or "").strip()
-    if not text:
-        return None
+def _send_email_to_manager(
+    recipient_email: str,
+    user_name: Optional[str],
+    comment: Optional[str],
+    email: Optional[str],
+    phone_e164: Optional[str],
+) -> None:
+    """Отправляет письмо владельцу сайта через обычный SMTP."""
+    smtp_host = _require_env("SMTP_HOST")
+    smtp_port = int(_require_env("SMTP_PORT"))
+    smtp_username = _normalize_email_address(_require_env("SMTP_USERNAME"))
+    smtp_password = _require_env("SMTP_PASSWORD")
+    sender_email = _normalize_email_address(_require_env("SMTP_FROM_EMAIL"))
+    sender_name = _require_env("SMTP_FROM_NAME")
+    subject = _require_env("CALLBACK_EMAIL_SUBJECT")
+    if smtp_port == 465:
+        use_ssl = True
+        use_starttls = False
+    elif smtp_port == 587:
+        use_ssl = False
+        use_starttls = True
+    else:
+        raise Internal("Unsupported SMTP_PORT. Use 465 or 587.")
 
-    # Простейший вариант: начинается с ERROR
-    if not text.upper().startswith("ERROR"):
-        return None
+    msg = _build_email_message(
+        recipient_email=recipient_email,
+        sender_email=sender_email,
+        sender_name=sender_name,
+        subject=subject,
+        user_name=user_name,
+        comment=comment,
+        email=email,
+        phone_e164=phone_e164,
+    )
 
-    code_match = re.search(r"ERROR\s*=?\s*(\d+)", text, flags=re.IGNORECASE)
-    code = _normalize_error_code(code_match.group(1)) if code_match else None
-
-    # Пытаемся вытащить описание из скобок
-    desc_match = re.search(r"\((.*?)\)", text)
-    desc = desc_match.group(1).strip() if desc_match else None
-
-    message = _build_smsc_error_message(code, desc or text)
-    return SMSCError(message=message, code=code, technical_desc=text)
-
-
-def _check_smsc_json_payload(payload: Dict[str, Any]) -> None:
-    """
-    Проверяет JSON-ответ от SMSC.
-
-    Ожидаемый формат при fmt=3:
-    - при успехе: {"id": <id>, "cnt": <n>, ...}
-    - при ошибке: {"error_code": N, "error": "описание", ...}
-
-    При наличии признаков ошибки выбрасывает SMSCError.
-    """
-    if not isinstance(payload, dict):
-        raise SMSCError("Некорректный формат ответа от SMSC.", technical_desc=repr(payload))
-
-    # Верхнеуровневая ошибка (официальный формат: error_code + error)
-    error_code = _normalize_error_code(payload.get("error_code"))
-    error_desc = payload.get("error") or payload.get("error_description")
-
-    if error_code is not None or error_desc:
-        message = _build_smsc_error_message(error_code, error_desc)
-        raise SMSCError(message=message, code=error_code, technical_desc=error_desc or json.dumps(payload, ensure_ascii=False))
-
-    # Дополнительная проверка массива phones при op=1:
-    phones = payload.get("phones")
-    if isinstance(phones, list):
-        for phone_entry in phones:
-            if not isinstance(phone_entry, dict):
-                continue
-            status = str(phone_entry.get("status", "")).strip()
-            per_phone_error = phone_entry.get("error")
-            # Согласно документации, статус 0/1 — ОК, остальное трактуем как ошибку.
-            if per_phone_error and status not in ("0", "1"):
-                # Часто per_phone_error уже текстовый вид ошибки; кода может не быть.
-                message = _build_smsc_error_message(error_code=None, desc=str(per_phone_error))
-                raise SMSCError(
-                    message=message,
-                    code=None,
-                    technical_desc=json.dumps(phone_entry, ensure_ascii=False),
-                )
-
-    # Если ошибок не видно, считаем ответ валидным успехом.
-
-
-def _send_sms_to_manager(manager_phone_e164: str, text: str) -> None:
-    """Отправляет SMS руководителю через SMSC.ru напрямую (без utils-расширений)."""
-    login = os.getenv("SMSC_LOGIN")
-    password = os.getenv("SMSC_PASSWORD")
-    if not login or not password:
-        logger.error("smsc.creds_missing")
-        raise RuntimeError("SMSC credentials missing")
-
-    params = {
-        "login": login,
-        "psw": password,
-        "phones": manager_phone_e164,
-        "mes": text,
-        "fmt": 3,  # JSON-ответ
-        "charset": "utf-8",
-    }
-
-    # Не логируем пароль в открытом виде
-    safe_params = dict(params)
-    if "psw" in safe_params:
-        safe_params["psw"] = "***"
+    tls_context = ssl.create_default_context()
 
     try:
-        resp = requests.get("https://smsc.ru/sys/send.php", params=params, timeout=10)
-        resp.raise_for_status()
-    except requests.RequestException as e:
+        if use_ssl:
+            with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=10, context=tls_context) as client:
+                client.login(smtp_username, smtp_password)
+                client.send_message(msg)
+        else:
+            with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as client:
+                client.ehlo()
+                if use_starttls:
+                    client.starttls(context=tls_context)
+                    client.ehlo()
+                client.login(smtp_username, smtp_password)
+                client.send_message(msg)
+    except Exception as e:
         logger.error(
-            "smsc.request_error",
+            "smtp.send_failed",
             error=str(e),
             trace=traceback.format_exc(),
-            response_text=getattr(e, "response", None).text if getattr(e, "response", None) is not None else None,
-            status_code=getattr(getattr(e, "response", None), "status_code", None),
-            params=safe_params,
-        )
-        raise RuntimeError("SMSC request error")
-
-    # Пытаемся распарсить JSON, при неудаче — разбираем текстовый ERROR = N (...)
-    try:
-        payload = resp.json()
-    except ValueError:
-        body = (resp.text or "").strip()
-        logger.error(
-            "smsc.invalid_json",
-            body=body,
-            status_code=resp.status_code,
-            trace=traceback.format_exc(),
-            params=safe_params,
-        )
-        parsed_error = _parse_plain_error_body(body)
-        if parsed_error:
-            # Это легальная ошибка SMSC с понятным кодом
-            raise parsed_error
-        raise RuntimeError("SMSC invalid JSON response")
-
-    # На этом этапе JSON корректен — валидируем логическую часть (error_code, phones[] и т.д.)
-    try:
-        _check_smsc_json_payload(payload)
-    except SMSCError as e:
-        logger.error(
-            "smsc.api_error",
-            error=str(e),
-            code=e.code,
-            technical_desc=e.technical_desc,
-            payload=payload,
-            params=safe_params,
+            smtp_host=smtp_host,
+            smtp_port=smtp_port,
+            recipient=recipient_email,
         )
         raise
 
-    # Успешный ответ — логируем для отладки (без чувствительных данных)
     logger.info(
-        "smsc.sent",
-        smsc_payload=payload,
-        params=safe_params,
+        "smtp.sent",
+        smtp_host=smtp_host,
+        smtp_port=smtp_port,
+        recipient=recipient_email,
+        reply_to=email,
     )
 
 
 def handler(event, context):  # noqa: D401
     logger.info("callback_request.invoked")
+    logger.info(
+        "callback_request.request_raw",
+        request_text=json.dumps(
+            {
+                "method": ((event or {}).get("requestContext") or {}).get("http", {}).get("method")
+                or (event or {}).get("httpMethod"),
+                "path": ((event or {}).get("requestContext") or {}).get("http", {}).get("path")
+                or (event or {}).get("path"),
+                "headers": logger.redact_headers((event or {}).get("headers") or {}),
+                "query": (event or {}).get("queryStringParameters") or {},
+                "path_params": (event or {}).get("pathParameters") or {},
+                "body": (event or {}).get("body"),
+                "isBase64Encoded": bool((event or {}).get("isBase64Encoded")),
+                "requestContext": (event or {}).get("requestContext") or {},
+            },
+            ensure_ascii=False,
+            indent=2,
+            default=str,
+        ),
+    )
 
-    # CORS preflight
     pre = handle_preflight((event or {}).get("headers") or {}, allow_origin=os.getenv("CORS_ALLOW_ORIGIN", "*"))
     if pre:
         return _with_base_headers(pre)
 
-    # Parse request
     try:
         req = parse_event(event)
         body = req.get("body_dict") or {}
@@ -281,10 +353,15 @@ def handler(event, context):  # noqa: D401
         return _with_base_headers(bad_request(f"Invalid request: {e}"))
 
     logger.info(
-        "callback_request.received",
+        "callback_request.request",
+        request_text=_format_request_text(event or {}, req),
         headers=logger.redact_headers((event or {}).get("headers") or {}),
         payload=body,
     )
+
+    contract_error = _validate_contract_hashes(req.get("headers") or {})
+    if contract_error:
+        return contract_error
 
     email = (body.get("email") or "").strip().lower() if body.get("email") else None
     phone_raw = (body.get("phone_number") or "").strip() if body.get("phone_number") else None
@@ -300,44 +377,29 @@ def handler(event, context):  # noqa: D401
         logger.warn("callback_request.missing_identifier")
         return _with_base_headers(bad_request("Either email or phone_number is required."))
 
-    # Compose message
-    message_text = _build_message(user_name, comment, email, phone_e164)
-
-    # Resolve manager/operator phone from env and send SMS
     try:
-        manager_phone_raw = _require_env("CALLBACK_NOTIFY_PHONE")
-        manager_phone = validate_phone_number(manager_phone_raw)
-        if not manager_phone:
-            logger.error("callback_request.invalid_manager_phone", value=manager_phone_raw)
-            return _with_base_headers(server_error("Service configuration error: invalid manager phone"))
-
-        _send_sms_to_manager(manager_phone, message_text)
-
-    except SMSCError as e:
-        # Чёткое сообщение, что именно не понравилось SMSC
-        logger.error(
-            "callback_request.smsc_error",
-            error=str(e),
-            code=e.code,
-            technical_desc=e.technical_desc,
-            trace=traceback.format_exc(),
-            payload=message_text,
+        recipient_email = _require_env("CALLBACK_NOTIFY_EMAIL")
+        _send_email_to_manager(
+            recipient_email=recipient_email,
+            user_name=user_name,
+            comment=comment,
+            email=email,
+            phone_e164=phone_e164,
         )
-        user_msg = "SMSC error"
-        if e.code is not None:
-            user_msg += f" (code {e.code})"
-        user_msg += f": {e}"
-        return _with_base_headers(server_error(user_msg))
-
-    except Exception as e:  # прочие ошибки (сеть, инфраструктура и т.п.)
+    except Exception as e:
         logger.error(
             "callback_request.send_failed",
             error=str(e),
             trace=traceback.format_exc(),
-            payload=message_text,
+            payload=_build_message(user_name, comment, email, phone_e164),
         )
-        return _with_base_headers(server_error("Failed to send SMS"))
+        return _with_base_headers(server_error("Failed to send email"))
 
-    logger.info("callback_request.sent", manager_phone=manager_phone, lead_phone=phone_e164, email=email)
-    return _with_base_headers(ok({"message": "Callback request sent via SMS."}))
+    logger.info(
+        "callback_request.sent",
+        recipient_email=recipient_email,
+        lead_phone=phone_e164,
+        email=email,
+    )
+    return _with_base_headers(ok({"message": "Callback request sent via email."}))
 ```

@@ -1,5 +1,8 @@
 // callback_form.js
 
+const CALLBACK_REQUEST_SCHEMA_HASH = "81a26973e17bc344098ca06efc0fd2495d8bd846ea7979e9c74a989f143fa819";
+const CALLBACK_RESPONSE_SCHEMA_HASH = "2d9389fd413dd30152e0e565cdc0b9fedbba342f7b5983973d572fcef4cb7871";
+
 let currentCaptchaToken = null;
 let currentCaptchaWindow = null;
 
@@ -61,6 +64,8 @@ async function sendCallbackRequest(payload) {
         headers: {
             "Content-Type": "application/json",
             "X-Correlation-Id": correlationId,
+            "X-Request-Schema-Hash": CALLBACK_REQUEST_SCHEMA_HASH,
+            "X-Response-Schema-Hash": CALLBACK_RESPONSE_SCHEMA_HASH,
             "SmartCaptcha-Token": currentCaptchaToken,
         },
         body: JSON.stringify(payload),

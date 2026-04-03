@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:prohandyman_landing/core/constants/constants.dart';
 import 'package:prohandyman_landing/core/theme/app_theme_tokens.dart';
 import 'package:prohandyman_landing/core/theme/extensions/landing_header_theme.dart';
 

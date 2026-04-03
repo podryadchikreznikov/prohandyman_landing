@@ -116,10 +116,11 @@
 
         try {
           window.postMessage(
-            {
+            JSON.stringify({
+              channel: 'SMARTCAPTCHA_BRIDGE',
               type: 'SMARTCAPTCHA_TOKEN',
               token: token,
-            },
+            }),
             '*'
           );
         } catch (e) {
@@ -133,9 +134,10 @@
 
         try {
           window.postMessage(
-            {
+            JSON.stringify({
+              channel: 'SMARTCAPTCHA_BRIDGE',
               type: 'SMARTCAPTCHA_EXPIRED',
-            },
+            }),
             '*'
           );
         } catch (e) {
@@ -149,9 +151,10 @@
 
         try {
           window.postMessage(
-            {
+            JSON.stringify({
+              channel: 'SMARTCAPTCHA_BRIDGE',
               type: 'SMARTCAPTCHA_ERROR',
-            },
+            }),
             '*'
           );
         } catch (e) {
@@ -264,14 +267,15 @@
   function postJsError(payload) {
     try {
       window.postMessage(
-        {
+        JSON.stringify({
+          channel: 'FRONTEND_ERROR_BRIDGE',
           type: 'FRONTEND_JS_ERROR',
           message: payload.message || 'Unknown JS error',
           source: payload.source || 'unknown',
           filename: payload.filename || null,
           lineno: payload.lineno || null,
           colno: payload.colno || null,
-        },
+        }),
         '*'
       );
     } catch (e) {

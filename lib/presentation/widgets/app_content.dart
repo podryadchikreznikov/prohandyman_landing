@@ -18,7 +18,7 @@ class AppContent extends StatelessWidget {
     return MaterialApp.router(
       showPerformanceOverlay: showOverlay,
       debugShowCheckedModeBanner: false,
-      title: 'Renzikov Hub',
+      title: 'ProHandyman',
       themeMode: ThemeMode.light,
       // Global theme overrides: tweak default Material widgets (AppBar, etc.)
       // instead of styling each feature manually.

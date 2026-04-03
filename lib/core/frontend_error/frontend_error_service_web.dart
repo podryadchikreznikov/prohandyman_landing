@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html' as html;
 
 import 'package:talker/talker.dart';
@@ -25,19 +26,35 @@ class FrontendErrorServiceWeb implements FrontendErrorService {
     _started = true;
 
     _subscription = html.window.onMessage.listen((event) {
-      final data = event.data;
-      if (data is! Map) return;
+      final rawData = event.data;
+      Map? decoded;
+      if (rawData is String) {
+        try {
+          final decodedRaw = jsonDecode(rawData);
+          if (decodedRaw is Map) {
+            decoded = decodedRaw;
+          }
+        } on FormatException {
+          return;
+        }
+      } else if (rawData is Map) {
+        decoded = rawData;
+      }
+      if (decoded == null) return;
+      if (decoded['channel']?.toString() != 'FRONTEND_ERROR_BRIDGE') {
+        return;
+      }
 
-      final type = data['type']?.toString();
+      final type = decoded['type']?.toString();
       if (type != 'FRONTEND_JS_ERROR') {
         return;
       }
 
-      final message = data['message']?.toString() ?? 'JS error';
-      final source = data['source']?.toString();
-      final filename = data['filename']?.toString();
-      final lineno = data['lineno']?.toString();
-      final colno = data['colno']?.toString();
+      final message = decoded['message']?.toString() ?? 'JS error';
+      final source = decoded['source']?.toString();
+      final filename = decoded['filename']?.toString();
+      final lineno = decoded['lineno']?.toString();
+      final colno = decoded['colno']?.toString();
 
       final buffer = StringBuffer(message);
       if (source != null && source.isNotEmpty) {

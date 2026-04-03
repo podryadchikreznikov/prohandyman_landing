@@ -13,19 +13,12 @@ class LandingServiceCenterSection extends StatefulWidget {
   final TiltGlobalPointerController? tiltPointerController;
 
   static const _bodyText = '''
-Сервисный центр MTL предлагает полный комплекс услуг по диагностике и устранению неисправностей бытовой техники разного назначения — посудомоечные и стиральные машины, холодильники, водонагреватели, варочные панели и духовые шкафы. Опытные мастера быстро определяют причину поломки и оперативно проведут ремонт, заменив необходимые комплектующие. На работы предоставляется официальная гарантия до 12 месяцев.
+Показателем нашего высокого профессионализма и надёжности является сотрудничество с крупными партнёрами, доверие которых подтверждает качество наших услуг.
 
-Все сотрудники сервиса — профессионалы своего дела, имеющие опыт работы в сфере ремонта бытовой техники не менее 5 лет. Мы постоянно внедряем современные технологии и используем оригинальные запасные части от производителей или дилеров.
+Среди наших клиентов — торговые сети, банки, застройщики, управляющие компании и коммерческие организации. Мы работаем точно по проекту, соблюдаем сроки и держим стабильное качество на каждом объекте.
 
-> Наша команда оказывает услуги с выездом на дом без транспортировки техники в сервис. Это удобно для клиентов. Ремонт проводится в день обращения, при наличии запчастей. Мы нацелены на высокие результаты, проявляя индивидуальный подход к каждому клиенту и устройству.
+> Выбирая нас, вы получаете проверенного партнёра, на которого можно положиться в любом проекте.
 ''';
-
-  static const _quoteText =
-      'Наша команда оказывает услуги с выездом на дом без '
-      'транспортировки техники в сервис. Это удобно для клиентов. Ремонт '
-      'проводится в день обращения, при наличии запчастей. Мы нацелены на '
-      'высокие результаты, проявляя индивидуальный подход к каждому клиенту '
-      'и устройству.';
 
   @override
   State<LandingServiceCenterSection> createState() =>
@@ -70,7 +63,7 @@ class _LandingServiceCenterSectionState
 
     if (useCompact) {
       return _ServiceCenterCompactLayout(
-        quoteText: LandingServiceCenterSection._quoteText,
+        bodyText: LandingServiceCenterSection._bodyText,
         serviceTheme: serviceTheme,
         tiltPointerController: widget.tiltPointerController,
       );
@@ -113,7 +106,7 @@ class _ServiceCenterWideLayout extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'MTL СЕРВИСНЫЙ ЦЕНТР',
+                      'Почему нам доверяют',
                       style: serviceTheme.headingTextStyle,
                       textAlign: isHorizontal
                           ? TextAlign.left
@@ -168,14 +161,25 @@ class _ServiceCenterWideLayout extends StatelessWidget {
 
 class _ServiceCenterCompactLayout extends StatelessWidget {
   const _ServiceCenterCompactLayout({
-    required this.quoteText,
+    required this.bodyText,
     required this.serviceTheme,
     this.tiltPointerController,
   });
 
-  final String quoteText;
+  final String bodyText;
   final LandingServiceCenterTheme serviceTheme;
   final TiltGlobalPointerController? tiltPointerController;
+
+  static String _extractFirstQuoteLine(String markdown) {
+    final lines = markdown.split('\n');
+    for (final line in lines) {
+      final trimmed = line.trimLeft();
+      if (trimmed.startsWith('>')) {
+        return trimmed.replaceFirst(RegExp(r'^>\s*'), '');
+      }
+    }
+    return markdown.trim();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +192,7 @@ class _ServiceCenterCompactLayout extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'MTL СЕРВИСНЫЙ ЦЕНТР',
+                'Почему нам доверяют',
                 style: serviceTheme.headingTextStyle,
                 textAlign: TextAlign.center,
               ),
@@ -218,7 +222,7 @@ class _ServiceCenterCompactLayout extends StatelessWidget {
                         child: Padding(
                           padding: serviceTheme.compactQuotePadding,
                           child: Text(
-                            quoteText,
+                            _extractFirstQuoteLine(bodyText),
                             style: serviceTheme.quoteTextStyle,
                           ),
                         ),

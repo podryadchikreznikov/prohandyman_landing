@@ -96,13 +96,10 @@ class _LandingRepairCategoriesState extends State<LandingRepairCategories> {
                               baseItemWidth: baseItemWidth,
                               itemCount: repairCategories.length,
                             ),
-                            child: TiltWrapper(
-                              borderRadius: BorderRadius.zero,
-                              child: RepairCategoryCard(
-                                category: repairCategories[i],
-                                onScrollLockChanged:
-                                    widget.onInnerScrollLockChanged,
-                              ),
+                            child: RepairCategoryCard(
+                              category: repairCategories[i],
+                              onScrollLockChanged:
+                                  widget.onInnerScrollLockChanged,
                             ),
                           ),
                       ],

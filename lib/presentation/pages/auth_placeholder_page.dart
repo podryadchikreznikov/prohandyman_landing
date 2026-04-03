@@ -9,10 +9,10 @@ class AuthPlaceholderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Authentication')),
+      appBar: AppBar(title: const Text('ProHandyman')),
       body: Center(
         child: Text(
-          'Auth feature scaffold goes here.',
+          'prohandyman.ru — автор Reznikov',
           style: Theme.of(context).textTheme.titleMedium,
         ),
       ),

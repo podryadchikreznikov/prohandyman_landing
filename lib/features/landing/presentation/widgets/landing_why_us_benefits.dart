@@ -10,46 +10,67 @@ class LandingWhyUsBenefitsSection extends StatefulWidget {
 
   static const _items = [
     _BenefitItemData(
-      icon: Icons.access_time,
-      title: 'Работаем 24/7',
-      compactTitle: 'Работаем\n24/7',
+      icon: Icons.star_outline,
+      title: 'Большой опыт работы',
+      compactTitle: 'Большой опыт\nработы',
       description:
-          'Ремонтируем бытовую технику каждый день без перерывов, выходных и праздников',
+          'Команда из 20 штатных мастеров работает на крупных объектах и в B2B-сегменте.',
     ),
     _BenefitItemData(
-      icon: Icons.local_shipping_outlined,
-      title: 'Бесплатный выезд',
-      compactTitle: 'Бесплатный\nвыезд',
+      icon: Icons.security,
+      title: 'Полная материальная ответственность',
+      compactTitle: 'Материальная\nответственность',
       description:
-          'Мастер бесплатно приезжает на дом к клиенту для проведения диагностики и ремонта',
+          'Несём ответственность за выполненные работы и устраняем недочёты за свой счёт.',
     ),
     _BenefitItemData(
-      icon: Icons.schedule_send_outlined,
-      title: 'Быстрое реагирование',
-      compactTitle: 'Быстрое\nреагирование',
+      icon: Icons.description_outlined,
+      title: 'Полный пакет документов',
+      compactTitle: 'Полный пакет\nдокументов',
       description:
-          'Будем на месте в течение часа после оставления заявки на сайте или звонка в сервис',
-    ),
-    _BenefitItemData(
-      icon: Icons.local_offer_outlined,
-      title: 'Скидка 10%',
-      compactTitle: 'Скидка\n10%',
-      description:
-          'Действует система дополнительных бонусов при оформлении заявки с нашего сайта',
-    ),
-    _BenefitItemData(
-      icon: Icons.verified_outlined,
-      title: 'Гарантия 12 месяцев',
-      compactTitle: 'Гарантия\n12 месяцев',
-      description:
-          'После завершения ремонта предоставляется гарантийный талон сроком до года',
+          'Работаем по договору, выдаём акты и сохраняем прозрачность для юридических лиц.',
     ),
     _BenefitItemData(
       icon: Icons.attach_money_outlined,
-      title: 'Демократия цен',
-      compactTitle: 'Демократия\nцен',
+      title: 'Гибкая ценовая политика',
+      compactTitle: 'Гибкая\nценовая политика',
       description:
-          'Наши тарифы прозрачны и доступны всем, являясь одними из самых низких в городе',
+          'Гибкая ценовая политика для каждого заказчика, возможность отсрочки платежа',
+    ),
+    _BenefitItemData(
+      icon: Icons.assignment_turned_in_outlined,
+      title: 'Не меняем условий договора',
+      compactTitle: 'Не меняем\nусловий договора',
+      description:
+          'Фиксируем объём и сроки заранее и соблюдаем согласованный план работ.',
+    ),
+    _BenefitItemData(
+      icon: Icons.groups_outlined,
+      title: 'Бригадир на весь срок работ',
+      compactTitle: 'Бригадир на\nвесь срок работ',
+      description:
+          'На объекте есть ответственный, который держит связь и контролирует качество.',
+    ),
+    _BenefitItemData(
+      icon: Icons.school_outlined,
+      title: 'Профессиональные мастера',
+      compactTitle: 'Профессиональные\nмастера',
+      description:
+          'Все мастера проходят обучение и работают по внутренним стандартам компании.',
+    ),
+    _BenefitItemData(
+      icon: Icons.local_shipping_outlined,
+      title: 'Бесплатный выезд и расчёт',
+      compactTitle: 'Бесплатный выезд\nи расчёт',
+      description:
+          'Приезжаем на объект, оцениваем объём работ и даём предварительную смету без обязательств.',
+    ),
+    _BenefitItemData(
+      icon: Icons.verified_outlined,
+      title: 'Гарантия на работы',
+      compactTitle: 'Гарантия\nна работы',
+      description:
+          'Даём гарантию на выполненные работы и быстро реагируем на замечания.',
     ),
   ];
 
@@ -129,6 +150,49 @@ class _LandingWhyUsBenefitsSectionState
   }
 }
 
+class _BenefitTile extends StatelessWidget {
+  const _BenefitTile({
+    required this.index,
+    required this.theme,
+    required this.child,
+  });
+
+  final int index;
+  final LandingBenefitsTheme theme;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    // Accent color from global theme tokens (используем для обводки)
+    final accent = AppThemeTokens.brandPrimary;
+    final isOdd = (index + 1).isOdd; // 1-based odd/even
+
+    // 11% / 22% implemented via opacity on full accent color for border
+    final borderColor = isOdd
+        ? accent.withOpacity(0.11)
+        : accent.withOpacity(0.22);
+    final iconColor = themeData.colorScheme.onSurface;
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: borderColor, width: 2),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        child: IconTheme(
+          data: IconThemeData(
+            color: iconColor,
+            size: theme.iconSize,
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
 class _BenefitItemData {
   const _BenefitItemData({
     required this.icon,
@@ -158,14 +222,14 @@ class _BenefitItem extends StatelessWidget {
     final titleStyle = textTheme.titleMedium;
     final descriptionStyle = textTheme.bodySmall;
 
+    final hasDescription = data.description.trim().isNotEmpty;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Icon(
           data.icon,
-          size: theme.iconSize,
-          color: theme.iconColor,
         ),
         SizedBox(height: theme.itemInnerSpacing),
         Text(
@@ -173,70 +237,171 @@ class _BenefitItem extends StatelessWidget {
           textAlign: TextAlign.center,
           style: titleStyle,
         ),
-        SizedBox(height: theme.itemInnerSpacing),
-        Text(
-          data.description,
-          textAlign: TextAlign.center,
-          style: descriptionStyle,
-        ),
+        if (hasDescription) ...[
+          SizedBox(height: theme.itemInnerSpacing),
+          Text(
+            data.description,
+            textAlign: TextAlign.center,
+            style: descriptionStyle,
+          ),
+        ],
       ],
     );
   }
 }
 
-class _WideBenefitsGrid extends StatelessWidget {
+class _WideBenefitsGrid extends StatefulWidget {
   const _WideBenefitsGrid({required this.items, required this.theme});
 
   final List<_BenefitItemData> items;
   final LandingBenefitsTheme theme;
 
   @override
+  State<_WideBenefitsGrid> createState() => _WideBenefitsGridState();
+}
+
+class _WideBenefitsGridState extends State<_WideBenefitsGrid> {
+  double? _maxTileHeight;
+
+  void _reportTileHeight(double height) {
+    if (height <= 0) return;
+    if (_maxTileHeight == null || height > _maxTileHeight!) {
+      setState(() {
+        _maxTileHeight = height;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final theme = widget.theme;
+    final items = widget.items;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final maxWidth = constraints.maxWidth;
         final columns = _calculateColumns(maxWidth);
-        final spacing = theme.itemsHorizontalGap;
-        final itemWidth = (maxWidth - spacing * (columns - 1)) / columns;
+        const spacing = 0.0;
+        final itemWidth = maxWidth / columns;
 
         return Wrap(
           alignment: WrapAlignment.center,
           spacing: spacing,
-          runSpacing: theme.itemsVerticalGap,
-          children: items
-              .map(
-                (item) => SizedBox(
-                  width: itemWidth,
-                  child: _BenefitItem(data: item, theme: theme),
+          runSpacing: 0,
+          children: [
+            for (var index = 0; index < items.length; index++)
+              SizedBox(
+                width: itemWidth,
+                child: _BenefitTile(
+                  index: index,
+                  theme: theme,
+                  child: _maxTileHeight == null
+                      ? _MeasurableTile(
+                          onSize: _reportTileHeight,
+                          child: _BenefitItem(
+                            data: items[index],
+                            theme: theme,
+                          ),
+                        )
+                      : SizedBox(
+                          height: _maxTileHeight,
+                          child: _BenefitItem(
+                            data: items[index],
+                            theme: theme,
+                          ),
+                        ),
                 ),
-              )
-              .toList(),
+              ),
+          ],
         );
       },
     );
   }
 }
 
-class _CompactBenefitsGrid extends StatelessWidget {
+class _MeasurableTile extends StatefulWidget {
+  const _MeasurableTile({
+    required this.child,
+    required this.onSize,
+  });
+
+  final Widget child;
+  final ValueChanged<double> onSize;
+
+  @override
+  State<_MeasurableTile> createState() => _MeasurableTileState();
+}
+
+class _MeasurableTileState extends State<_MeasurableTile> {
+  final GlobalKey _key = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
+  }
+
+  @override
+  void didUpdateWidget(covariant _MeasurableTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
+  }
+
+  void _notifySize() {
+    final context = _key.currentContext;
+    if (context == null) return;
+    final size = context.size;
+    if (size != null) {
+      widget.onSize(size.height);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: _key,
+      child: widget.child,
+    );
+  }
+}
+
+class _CompactBenefitsGrid extends StatefulWidget {
   const _CompactBenefitsGrid({required this.items, required this.theme});
 
   final List<_BenefitItemData> items;
   final LandingBenefitsTheme theme;
 
   @override
+  State<_CompactBenefitsGrid> createState() => _CompactBenefitsGridState();
+}
+
+class _CompactBenefitsGridState extends State<_CompactBenefitsGrid> {
+  double? _maxTileHeight;
+
+  void _reportTileHeight(double height) {
+    if (height <= 0) return;
+    if (_maxTileHeight == null || height > _maxTileHeight!) {
+      setState(() {
+        _maxTileHeight = height;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final theme = widget.theme;
+    final items = widget.items;
     final titleStyle = theme.compactTitleTextStyle;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         const columns = 3;
-        final spacing = theme.compactItemsHorizontalGap;
-        final runSpacing = theme.compactItemsVerticalGap;
+        const spacing = 0.0;
+        const runSpacing = 0.0;
         final maxWidth = constraints.maxWidth;
-        final computedWidth =
-            (maxWidth - spacing * (columns - 1)) / columns;
+        final computedWidth = maxWidth / columns;
         final tileWidth = math.max(theme.compactMinTileWidth, computedWidth);
-        final totalWidth = columns * tileWidth + spacing * (columns - 1);
+        final totalWidth = columns * tileWidth;
         final needsScroll = totalWidth > maxWidth;
 
         final grid = SizedBox(
@@ -245,24 +410,45 @@ class _CompactBenefitsGrid extends StatelessWidget {
             spacing: spacing,
             runSpacing: runSpacing,
             children: [
-              for (final item in items)
+              for (var index = 0; index < items.length; index++)
                 SizedBox(
                   width: tileWidth,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        item.icon,
-                        size: theme.iconSize,
-                        color: theme.iconColor,
-                      ),
-                      SizedBox(height: theme.itemInnerSpacing),
-                      Text(
-                        item.compactTitle ?? item.title,
-                        textAlign: TextAlign.center,
-                        style: titleStyle,
-                      ),
-                    ],
+                  child: _BenefitTile(
+                    index: index,
+                    theme: theme,
+                    child: _maxTileHeight == null
+                        ? _MeasurableTile(
+                            onSize: _reportTileHeight,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(items[index].icon),
+                                SizedBox(height: theme.itemInnerSpacing),
+                                Text(
+                                  items[index].compactTitle ??
+                                      items[index].title,
+                                  textAlign: TextAlign.center,
+                                  style: titleStyle,
+                                ),
+                              ],
+                            ),
+                          )
+                        : SizedBox(
+                            height: _maxTileHeight,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(items[index].icon),
+                                SizedBox(height: theme.itemInnerSpacing),
+                                Text(
+                                  items[index].compactTitle ??
+                                      items[index].title,
+                                  textAlign: TextAlign.center,
+                                  style: titleStyle,
+                                ),
+                              ],
+                            ),
+                          ),
                   ),
                 ),
             ],

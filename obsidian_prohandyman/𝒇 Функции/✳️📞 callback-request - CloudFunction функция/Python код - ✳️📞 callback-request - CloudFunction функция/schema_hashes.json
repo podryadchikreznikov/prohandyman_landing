@@ -1,0 +1,6 @@
+{
+  "title": "callback-request contracts",
+  "schema_hash_alg": "sha256(json.dumps(schema, sort_keys=True, separators=(',',':'), ensure_ascii=False))",
+  "request_schema_hash": "81a26973e17bc344098ca06efc0fd2495d8bd846ea7979e9c74a989f143fa819",
+  "response_schema_hash": "2d9389fd413dd30152e0e565cdc0b9fedbba342f7b5983973d572fcef4cb7871"
+}

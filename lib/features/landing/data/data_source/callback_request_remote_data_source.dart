@@ -31,6 +31,8 @@ class CallbackRequestRemoteDataSourceImpl
     final headers = <String, dynamic>{
       'Content-Type': 'application/json',
       'X-Correlation-Id': _uuid.v4(),
+      'X-Request-Schema-Hash': AppConfig.callbackRequestSchemaHash,
+      'X-Response-Schema-Hash': AppConfig.callbackResponseSchemaHash,
       if (captchaToken != null && captchaToken.isNotEmpty)
         'SmartCaptcha-Token': captchaToken,
     };

@@ -1,5 +1,6 @@
 // lib/features/landing/presentation/widgets/landing_hero_carousel.dart
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:prohandyman_landing/core/theme/extensions/landing_carousel_theme.dart';
@@ -16,18 +17,18 @@ class _LandingHeroCarouselState extends State<LandingHeroCarousel> {
   static const _slides = [
     _LandingCarouselSlide(
       assetPath: 'assets/slides/slide1.jpg',
-      title: 'Выездной ремонт бытовой техники в Екатеринбурге',
-      subtitle: 'Срочная диагностика и восстановление на дому и в офисе',
+      title: 'Сборка мебели и оборудования под крупные проекты',
+      subtitle: 'Офисы, магазины, гостиницы, рестораны и жилые комплексы',
     ),
     _LandingCarouselSlide(
       assetPath: 'assets/slides/slide2.jpg',
-      title: 'Постгарантийное обслуживание премиальных брендов',
-      subtitle: 'Сертифицированные мастера и оригинальные комплектующие',
+      title: 'Команда из 20 штатных мастеров',
+      subtitle: 'Работаем по договору, соблюдаем сроки и держим качество',
     ),
     _LandingCarouselSlide(
       assetPath: 'assets/slides/slide3.jpg',
-      title: 'Комплексная модернизация кухонных студий',
-      subtitle: 'Проектирование, монтаж и настройка техники под ключ',
+      title: 'Торговая, металлическая и корпусная мебель',
+      subtitle: 'Соблюдаем ГОСТы, проектную документацию и стандарты заказчика',
     ),
   ];
 
@@ -178,12 +179,6 @@ class _LandingHeroCarouselState extends State<LandingHeroCarousel> {
               style: theme.subtitleTextStyle,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-            _CarouselIndicators(
-              itemCount: _slides.length,
-              currentIndex: _currentIndex,
-              theme: theme,
-            ),
           ],
         ),
       ),
@@ -203,12 +198,12 @@ class _LandingHeroCarouselState extends State<LandingHeroCarousel> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _CarouselArrowButton(
-                    icon: Icons.chevron_left,
+                    isLeft: true,
                     theme: theme,
                     onPressed: () => _changeSlide(-1, resetTimer: true),
                   ),
                   _CarouselArrowButton(
-                    icon: Icons.chevron_right,
+                    isLeft: false,
                     theme: theme,
                     onPressed: () => _changeSlide(1, resetTimer: true),
                   ),
@@ -219,6 +214,97 @@ class _LandingHeroCarouselState extends State<LandingHeroCarousel> {
         ),
       ),
     );
+  }
+}
+
+class _TriangleArrowPainter extends CustomPainter {
+  _TriangleArrowPainter({
+    required this.color,
+    required this.isLeft,
+  });
+
+  final Color color;
+  final bool isLeft;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final width = size.width;
+    final height = size.height;
+    final minSide = math.min(width, height);
+    final centerX = width / 2;
+    final centerY = height / 2;
+
+    // Triangle dimensions relative to the smallest side to keep shape consistent.
+    final baseHalf = minSide * 0.3; // half of the base width
+    final halfHeight = minSide * 0.35;
+
+    final path = Path();
+    if (isLeft) {
+      // Apex on the left, base on the right.
+      path
+        ..moveTo(centerX - baseHalf, centerY)
+        ..lineTo(centerX + baseHalf, centerY - halfHeight)
+        ..lineTo(centerX + baseHalf, centerY + halfHeight)
+        ..close();
+    } else {
+      // Apex on the right, base on the left.
+      path
+        ..moveTo(centerX + baseHalf, centerY)
+        ..lineTo(centerX - baseHalf, centerY - halfHeight)
+        ..lineTo(centerX - baseHalf, centerY + halfHeight)
+        ..close();
+    }
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _TriangleArrowPainter oldDelegate) {
+    return oldDelegate.color != color || oldDelegate.isLeft != isLeft;
+  }
+}
+
+class _TriangleClipper extends CustomClipper<Path> {
+  _TriangleClipper({required this.isLeft});
+
+  final bool isLeft;
+
+  @override
+  Path getClip(Size size) {
+    final width = size.width;
+    final height = size.height;
+    final minSide = math.min(width, height);
+    final centerX = width / 2;
+    final centerY = height / 2;
+
+    final baseHalf = minSide * 0.3;
+    final halfHeight = minSide * 0.35;
+
+    final path = Path();
+    if (isLeft) {
+      path
+        ..moveTo(centerX - baseHalf, centerY)
+        ..lineTo(centerX + baseHalf, centerY - halfHeight)
+        ..lineTo(centerX + baseHalf, centerY + halfHeight)
+        ..close();
+    } else {
+      path
+        ..moveTo(centerX + baseHalf, centerY)
+        ..lineTo(centerX - baseHalf, centerY - halfHeight)
+        ..lineTo(centerX - baseHalf, centerY + halfHeight)
+        ..close();
+    }
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant _TriangleClipper oldClipper) {
+    return oldClipper.isLeft != isLeft;
   }
 }
 
@@ -272,55 +358,14 @@ class _CarouselSlide extends StatelessWidget {
     );
   }
 }
-
-class _CarouselIndicators extends StatelessWidget {
-  const _CarouselIndicators({
-    required this.itemCount,
-    required this.currentIndex,
-    required this.theme,
-  });
-
-  final int itemCount;
-  final int currentIndex;
-  final LandingCarouselTheme theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(itemCount, (index) {
-        final isActive = index == currentIndex;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: theme.indicatorSize,
-          height: theme.indicatorSize,
-          margin: EdgeInsets.only(
-            right: index == itemCount - 1 ? 0 : theme.indicatorSpacing,
-          ),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isActive ? theme.indicatorActiveColor : Colors.transparent,
-            border: Border.all(
-              color: isActive
-                  ? theme.indicatorActiveColor
-                  : theme.indicatorInactiveColor,
-              width: 2,
-            ),
-          ),
-        );
-      }),
-    );
-  }
-}
-
 class _CarouselArrowButton extends StatelessWidget {
   const _CarouselArrowButton({
-    required this.icon,
+    required this.isLeft,
     required this.theme,
     required this.onPressed,
   });
 
-  final IconData icon;
+  final bool isLeft;
   final LandingCarouselTheme theme;
   final VoidCallback onPressed;
 
@@ -328,16 +373,35 @@ class _CarouselArrowButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Material(
-        color: theme.arrowBackgroundColor,
-        shape: const CircleBorder(),
-        child: InkWell(
-          onTap: onPressed,
-          customBorder: const CircleBorder(),
-          child: SizedBox(
-            width: theme.arrowButtonSize,
-            height: theme.arrowButtonSize,
-            child: Icon(icon, color: theme.arrowIconColor),
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: onPressed,
+        child: SizedBox(
+          // Enlarged hit area around the visual triangle.
+          width: theme.arrowButtonSize * 1.8,
+          height: theme.arrowButtonSize * 1.8,
+          child: Center(
+            child: SizedBox(
+              width: theme.arrowButtonSize,
+              height: theme.arrowButtonSize,
+              child: ClipPath(
+                clipper: _TriangleClipper(isLeft: isLeft),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onPressed,
+                    splashColor: theme.arrowBackgroundColor,
+                    highlightColor: Colors.transparent,
+                    child: CustomPaint(
+                      painter: _TriangleArrowPainter(
+                        color: theme.arrowBackgroundColor,
+                        isLeft: isLeft,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

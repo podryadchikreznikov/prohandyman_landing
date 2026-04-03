@@ -1,0 +1,5260 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "analytics-getter contracts",
+  "error_on_mismatch": {
+    "http_status": 426,
+    "code": "OUTDATED_CLIENT_SCHEMA",
+    "message": "Client schema version mismatch. Please update your application."
+  },
+  "endpoints": {
+    "/firms/{firm_id}/analytics/object-finance-history": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "object_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "object_finance_history"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "object",
+          "finance_events",
+          "workers_summary"
+        ],
+        "properties": {
+          "object": {
+            "type": "object",
+            "required": [
+              "object_id",
+              "object_name"
+            ],
+            "properties": {
+              "object_id": {
+                "type": "string"
+              },
+              "object_name": {
+                "type": "string"
+              },
+              "extra_charges_json": {
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "contact_person_json": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "attachments_json": {
+                "type": [
+                  "array",
+                  "null"
+                ]
+              }
+            }
+          },
+          "finance_events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "event_type"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "state": {
+                  "type": [
+                    "object",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "workers_summary": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "user_id",
+                "dispatcher_percent"
+              ],
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "dispatcher_percent": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/object-activity-presence": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "object_id",
+          "date"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "object_activity_presence"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "object_id",
+          "workers_present",
+          "total_workers",
+          "workers"
+        ],
+        "properties": {
+          "object_id": {
+            "type": "string"
+          },
+          "workers_present": {
+            "type": "integer"
+          },
+          "total_workers": {
+            "type": "integer"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "workers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "user_id",
+                "is_present"
+              ],
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "is_present": {
+                  "type": "boolean"
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "last_event_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "last_event_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "last_event_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "role_label": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "dispatcher_percent": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "user_profile": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "user_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "full_name": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "email": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "phone_number": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "tags_json": {
+                      "type": [
+                        "array",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/my-object-presence": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "my_object_presence"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "is_present",
+          "status",
+          "object_id",
+          "object_name",
+          "last_event_type",
+          "last_event_id",
+          "last_event_at",
+          "updated_at"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "is_present": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "present",
+              "left",
+              "unknown"
+            ]
+          },
+          "object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "object_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_event_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_event_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_event_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "updated_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/object-activity-timeline": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "object_id",
+          "date"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "object_activity_timeline"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "object_id",
+          "date",
+          "timeline_events",
+          "worker_percents",
+          "workers_summary"
+        ],
+        "properties": {
+          "object_id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "timeline_events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "event_type"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "event_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "user_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "state": {
+                  "type": [
+                    "object",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "worker_percents": {
+            "type": "object"
+          },
+          "workers_summary": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "user_id",
+                "is_present"
+              ],
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "is_present": {
+                  "type": "boolean"
+                },
+                "last_event_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "last_event_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "role_label": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "dispatcher_percent": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "user_profile": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "user_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "full_name": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "email": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "phone_number": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "tags_json": {
+                      "type": [
+                        "array",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/finance-turnover": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "finance_turnover"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "turnover_kopeks",
+          "gross_profit_kopeks",
+          "employee_payouts_kopeks",
+          "employee_costs_kopeks",
+          "object_costs_kopeks",
+          "objects_count"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "turnover_kopeks": {
+            "type": "integer"
+          },
+          "gross_profit_kopeks": {
+            "type": "integer"
+          },
+          "employee_payouts_kopeks": {
+            "type": "integer"
+          },
+          "employee_costs_kopeks": {
+            "type": "integer"
+          },
+          "object_costs_kopeks": {
+            "type": "integer"
+          },
+          "objects_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/finance-gross-profit": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "finance_gross_profit"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "gross_profit_kopeks"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "gross_profit_kopeks": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/finance-objects-summary": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "finance_objects_summary"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "search_query": {
+            "type": "string"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "overall",
+          "page",
+          "page_size",
+          "has_next",
+          "has_prev",
+          "items"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "overall": {
+            "type": "object",
+            "required": [
+              "turnover_kopeks",
+              "gross_profit_kopeks",
+              "employee_payouts_kopeks",
+              "employee_costs_kopeks",
+              "object_costs_kopeks",
+              "objects_count"
+            ],
+            "properties": {
+              "turnover_kopeks": {
+                "type": "integer"
+              },
+              "gross_profit_kopeks": {
+                "type": "integer"
+              },
+              "employee_payouts_kopeks": {
+                "type": "integer"
+              },
+              "employee_costs_kopeks": {
+                "type": "integer"
+              },
+              "object_costs_kopeks": {
+                "type": "integer"
+              },
+              "objects_count": {
+                "type": "integer"
+              }
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "object_id",
+                "object_name",
+                "status",
+                "contract_amount_kopeks",
+                "extra_charges_total_kopeks",
+                "shifts_total_kopeks",
+                "deals_total_kopeks",
+                "withholds_total_kopeks",
+                "total_kopeks",
+                "employee_payouts_kopeks",
+                "employee_costs_kopeks",
+                "object_costs_kopeks",
+                "gross_profit_kopeks"
+              ],
+              "properties": {
+                "object_id": {
+                  "type": "string"
+                },
+                "object_name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "contract_amount_kopeks": {
+                  "type": "integer"
+                },
+                "extra_charges_total_kopeks": {
+                  "type": "integer"
+                },
+                "shifts_total_kopeks": {
+                  "type": "integer"
+                },
+                "deals_total_kopeks": {
+                  "type": "integer"
+                },
+                "withholds_total_kopeks": {
+                  "type": "integer"
+                },
+                "total_kopeks": {
+                  "type": "integer"
+                },
+                "employee_payouts_kopeks": {
+                  "type": "integer"
+                },
+                "employee_costs_kopeks": {
+                  "type": "integer"
+                },
+                "object_costs_kopeks": {
+                  "type": "integer"
+                },
+                "gross_profit_kopeks": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/absences/total": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_absences_total"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "firm_id",
+          "total_absences"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "total_absences": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/absences/disputed": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_absences_disputed"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "firm_id",
+          "total_absences",
+          "disputed_absences"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "total_absences": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "disputed_absences": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/absences/month": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_absences_month"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "firm_id",
+          "month",
+          "year",
+          "monthly_absences"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          },
+          "monthly_absences": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/absences/month-details": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_absences_month_details"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "firm_id",
+          "month",
+          "year",
+          "monthly_absences",
+          "page",
+          "page_size",
+          "total",
+          "total_pages",
+          "has_next",
+          "has_prev",
+          "absence_events",
+          "appeals"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          },
+          "monthly_absences": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "total_pages": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "absence_events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "event_type",
+                "metadata",
+                "dispute"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "metadata": {
+                  "type": "object"
+                },
+                "object_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_address": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_address_json": {
+                  "type": [
+                    "object",
+                    "null"
+                  ]
+                },
+                "dispute_appeal_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "appeal_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "dispute": {
+                  "type": "object",
+                  "required": [
+                    "has_dispute",
+                    "disputes_count",
+                    "latest_dispute"
+                  ],
+                  "properties": {
+                    "has_dispute": {
+                      "type": "boolean"
+                    },
+                    "disputes_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "latest_dispute": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "required": [
+                        "appeal_id",
+                        "status",
+                        "is_closed",
+                        "source_type",
+                        "source_event_id"
+                      ],
+                      "properties": {
+                        "appeal_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "is_closed": {
+                          "type": "boolean"
+                        },
+                        "user_id": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "object_id": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "source_type": {
+                          "type": "string",
+                          "enum": [
+                            "absence"
+                          ]
+                        },
+                        "source_event_id": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                        },
+                        "updated_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "appeals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "appeal_id",
+                "status"
+              ],
+              "properties": {
+                "appeal_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "updated_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "source_type": {
+                  "type": "string",
+                  "enum": [
+                    "absence"
+                  ]
+                },
+                "source_event_id": {
+                  "type": "string"
+                },
+                "is_closed": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/attendance/month-summary": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_attendance_month_summary"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          },
+          "object_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "firm_id",
+          "month",
+          "year",
+          "selected_object_id",
+          "period_started_at",
+          "period_ended_at",
+          "objects",
+          "calendar_days",
+          "totals"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "selected_object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "period_started_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "period_ended_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "objects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "object_id",
+                "object_name",
+                "status",
+                "address_json"
+              ],
+              "properties": {
+                "object_id": {
+                  "type": "string"
+                },
+                "object_name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "address_json": {
+                  "type": [
+                    "object",
+                    "array",
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "calendar_days": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "date",
+                "actual_seconds",
+                "actual_hours",
+                "planned_seconds",
+                "planned_hours"
+              ],
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                "actual_seconds": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "actual_hours": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "planned_seconds": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "planned_hours": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "totals": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "actual_seconds",
+              "actual_hours",
+              "planned_seconds",
+              "planned_hours",
+              "unique_objects_count"
+            ],
+            "properties": {
+              "actual_seconds": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "actual_hours": {
+                "type": "number",
+                "minimum": 0
+              },
+              "planned_seconds": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "planned_hours": {
+                "type": "number",
+                "minimum": 0
+              },
+              "unique_objects_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/attendance/day-details": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id",
+          "date"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_attendance_day_details"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "object_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "firm_id",
+          "date",
+          "selected_object_id",
+          "events",
+          "totals"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "selected_object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "event_id",
+                "event_type",
+                "label",
+                "event_at",
+                "object_id",
+                "object_name",
+                "shift_id",
+                "shift_name",
+                "deal_id",
+                "deal_name"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "event_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "object_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "shift_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "shift_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "deal_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "deal_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "totals": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "actual_seconds",
+              "actual_hours",
+              "planned_seconds",
+              "planned_hours",
+              "unique_objects_count"
+            ],
+            "properties": {
+              "actual_seconds": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "actual_hours": {
+                "type": "number",
+                "minimum": 0
+              },
+              "planned_seconds": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "planned_hours": {
+                "type": "number",
+                "minimum": 0
+              },
+              "unique_objects_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/calendar/day-upcoming": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id",
+          "date"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_calendar_day_upcoming"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "object_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "firm_id",
+          "date",
+          "selected_object_id",
+          "shifts",
+          "deals",
+          "user_profiles"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "selected_object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "shifts": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "deals": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "user_profiles": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/calendar/day-period": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id",
+          "date"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_calendar_day_period"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "object_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "firm_id",
+          "date",
+          "selected_object_id",
+          "shifts",
+          "deals",
+          "user_profiles"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "selected_object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "shifts": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "deals": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "user_profiles": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/finance/month-list": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_finance_month_list"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "firm_id",
+          "month",
+          "year",
+          "page",
+          "page_size",
+          "total",
+          "total_pages",
+          "has_next",
+          "has_prev",
+          "events_count",
+          "dispatcher_percent",
+          "total_paid_kopeks",
+          "total_pending_kopeks",
+          "month_preview",
+          "finance_events"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "total_pages": {
+            "type": "integer"
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "events_count": {
+            "type": "integer"
+          },
+          "dispatcher_percent": {
+            "type": "number"
+          },
+          "total_paid_kopeks": {
+            "type": "integer"
+          },
+          "total_pending_kopeks": {
+            "type": "integer"
+          },
+          "month_preview": {
+            "type": "object",
+            "required": [
+              "amount_kopeks",
+              "salary_total_remaining_kopeks",
+              "rewards_total_kopeks",
+              "fines_total_kopeks",
+              "deals_total_kopeks",
+              "shifts_total_kopeks",
+              "rewards_fines_paid_kopeks",
+              "withholds_total_kopeks",
+              "dispatcher_percent",
+              "salary_items_count",
+              "events_total_count",
+              "period_started_at",
+              "period_ended_at",
+              "is_deferred"
+            ],
+            "properties": {
+              "amount_kopeks": {
+                "type": "integer"
+              },
+              "salary_total_remaining_kopeks": {
+                "type": "integer"
+              },
+              "rewards_total_kopeks": {
+                "type": "integer"
+              },
+              "fines_total_kopeks": {
+                "type": "integer"
+              },
+              "deals_total_kopeks": {
+                "type": "integer"
+              },
+              "shifts_total_kopeks": {
+                "type": "integer"
+              },
+              "rewards_fines_paid_kopeks": {
+                "type": "integer"
+              },
+              "withholds_total_kopeks": {
+                "type": "integer"
+              },
+              "dispatcher_percent": {
+                "type": "number"
+              },
+              "salary_items_count": {
+                "type": "integer"
+              },
+              "events_total_count": {
+                "type": "integer"
+              },
+              "period_started_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+              },
+              "period_ended_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+              },
+              "is_deferred": {
+                "type": "boolean"
+              }
+            }
+          },
+          "finance_events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "event_type",
+                "state"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "updated_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "amount_kopeks": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "state": {
+                  "type": "object"
+                },
+                "object_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "object_id": {
+                      "type": "string"
+                    },
+                    "object_name": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "status": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "address_json": {
+                      "type": [
+                        "object",
+                        "array",
+                        "string",
+                        "number",
+                        "boolean",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/finance/month-total": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_finance_month_total"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "firm_id",
+          "month",
+          "year",
+          "events_count",
+          "events_with_amount_count",
+          "dispatcher_percent",
+          "total_paid_kopeks",
+          "total_pending_kopeks"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "events_count": {
+            "type": "integer"
+          },
+          "events_with_amount_count": {
+            "type": "integer"
+          },
+          "dispatcher_percent": {
+            "type": "number"
+          },
+          "total_paid_kopeks": {
+            "type": "integer"
+          },
+          "total_pending_kopeks": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/finance/total": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_finance_total"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "firm_id",
+          "year",
+          "events_count",
+          "events_with_amount_count",
+          "dispatcher_percent",
+          "total_paid_kopeks",
+          "total_pending_kopeks"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "events_count": {
+            "type": "integer"
+          },
+          "events_with_amount_count": {
+            "type": "integer"
+          },
+          "dispatcher_percent": {
+            "type": "number"
+          },
+          "total_paid_kopeks": {
+            "type": "integer"
+          },
+          "total_pending_kopeks": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/employee/finance/cash-plan": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "employee_finance_cash_plan"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "as_of": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "firm_id",
+          "as_of",
+          "events_count",
+          "salary_items_count",
+          "active_salary_items_count",
+          "rewards_fines_created_kopeks",
+          "rewards_fines_paid_kopeks",
+          "rewards_fines_balance_kopeks",
+          "rewards_fines_pending_kopeks",
+          "rewards_fines_overpaid_kopeks",
+          "salary_total_kopeks",
+          "salary_paid_kopeks",
+          "salary_total_remaining_kopeks",
+          "salary_total_overpaid_kopeks",
+          "salary_paid_without_snapshot_kopeks",
+          "salary_paid_unknown_items",
+          "total_to_cover_all_kopeks",
+          "salary_items",
+          "dispatcher_settlement"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "firm_id": {
+            "type": "string"
+          },
+          "as_of": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "events_count": {
+            "type": "integer"
+          },
+          "salary_items_count": {
+            "type": "integer"
+          },
+          "active_salary_items_count": {
+            "type": "integer"
+          },
+          "rewards_fines_created_kopeks": {
+            "type": "integer"
+          },
+          "rewards_fines_paid_kopeks": {
+            "type": "integer"
+          },
+          "rewards_fines_balance_kopeks": {
+            "type": "integer"
+          },
+          "rewards_fines_pending_kopeks": {
+            "type": "integer"
+          },
+          "rewards_fines_overpaid_kopeks": {
+            "type": "integer"
+          },
+          "salary_total_kopeks": {
+            "type": "integer"
+          },
+          "salary_paid_kopeks": {
+            "type": "integer"
+          },
+          "salary_total_remaining_kopeks": {
+            "type": "integer"
+          },
+          "salary_total_overpaid_kopeks": {
+            "type": "integer"
+          },
+          "salary_paid_without_snapshot_kopeks": {
+            "type": "integer"
+          },
+          "salary_paid_unknown_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "salary_id",
+                "paid_kopeks"
+              ],
+              "properties": {
+                "salary_id": {
+                  "type": "string"
+                },
+                "paid_kopeks": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "total_to_cover_all_kopeks": {
+            "type": "integer"
+          },
+          "salary_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "salary_id",
+                "amount_kopeks",
+                "paid_kopeks",
+                "remaining_kopeks",
+                "overpaid_kopeks",
+                "deleted_at"
+              ],
+              "properties": {
+                "salary_id": {
+                  "type": "string"
+                },
+                "amount_kopeks": {
+                  "type": "integer"
+                },
+                "paid_kopeks": {
+                  "type": "integer"
+                },
+                "remaining_kopeks": {
+                  "type": "integer"
+                },
+                "overpaid_kopeks": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "active",
+                    "deleted"
+                  ]
+                },
+                "effective_from": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "deleted_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "payout_date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "last_payout_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "created_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "updated_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            }
+          },
+          "dispatcher_settlement": {
+            "type": ["object", "null"],
+            "required": [
+              "dispatcher_id",
+              "dispatcher_name",
+              "attribution_type",
+              "percent_snapshot",
+              "period_started_at",
+              "period_ended_at",
+              "source_last_settlement_event_id",
+              "source_last_settlement_created_at",
+              "current_period_due_kopeks",
+              "previous_debt_kopeks",
+              "amount_due_kopeks",
+              "amount_remaining_kopeks",
+              "shifts_count",
+              "previous_debts_count",
+              "shifts",
+              "previous_debts"
+            ],
+            "properties": {
+              "dispatcher_id": {"type": ["string", "null"]},
+              "dispatcher_name": {"type": ["string", "null"]},
+              "attribution_type": {"type": "string", "enum": ["dispatcher", "nominal"]},
+              "percent_snapshot": {"type": "number", "minimum": 0, "maximum": 100},
+              "period_started_at": {
+                "type": ["string", "null"],
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+              },
+              "period_ended_at": {
+                "type": ["string", "null"],
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+              },
+              "source_last_settlement_event_id": {"type": ["string", "null"]},
+              "source_last_settlement_created_at": {
+                "type": ["string", "null"],
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+              },
+              "current_period_due_kopeks": {"type": "integer"},
+              "previous_debt_kopeks": {"type": "integer"},
+              "amount_due_kopeks": {"type": "integer"},
+              "amount_remaining_kopeks": {"type": "integer"},
+              "shifts_count": {"type": "integer"},
+              "previous_debts_count": {"type": "integer"},
+              "shifts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "shift_event_id",
+                    "shift_id",
+                    "object_id",
+                    "object_name",
+                    "created_at",
+                    "event_at",
+                    "dispatcher_id",
+                    "dispatcher_name",
+                    "attribution_type",
+                    "gross_amount_kopeks",
+                    "percent_snapshot",
+                    "withheld_amount_kopeks"
+                  ],
+                  "properties": {
+                    "shift_event_id": {"type": "string"},
+                    "shift_id": {"type": ["string", "null"]},
+                    "object_id": {"type": ["string", "null"]},
+                    "object_name": {"type": ["string", "null"]},
+                    "created_at": {
+                      "type": ["string", "null"],
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                    },
+                    "event_at": {"type": ["string", "null"]},
+                    "dispatcher_id": {"type": ["string", "null"]},
+                    "dispatcher_name": {"type": ["string", "null"]},
+                    "attribution_type": {"type": ["string", "null"], "enum": ["dispatcher", "nominal", null]},
+                    "gross_amount_kopeks": {"type": "integer"},
+                    "percent_snapshot": {"type": "number", "minimum": 0, "maximum": 100},
+                    "withheld_amount_kopeks": {"type": "integer"}
+                  }
+                }
+              },
+              "previous_debts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "worker_user_id",
+                    "source_settlement_event_id",
+                    "source_event_at",
+                    "source_created_at",
+                    "remaining_kopeks"
+                  ],
+                  "properties": {
+                    "worker_user_id": {"type": "string"},
+                    "source_settlement_event_id": {"type": "string"},
+                    "source_event_at": {"type": ["string", "null"]},
+                    "source_created_at": {
+                      "type": ["string", "null"],
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                    },
+                    "remaining_kopeks": {"type": "integer"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/payroll/queue": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "action", "firm_id"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "action": {"type": "string", "const": "payroll_queue"},
+          "firm_id": {"type": "string", "minLength": 1},
+          "user_id": {"type": "string", "minLength": 1},
+          "page": {"type": "integer", "minimum": 0},
+          "page_size": {"type": "integer", "minimum": 1, "maximum": 100},
+          "as_of": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "as_of",
+          "page",
+          "page_size",
+          "total",
+          "total_pages",
+          "has_next",
+          "has_prev",
+          "ordinary_count",
+          "deferred_count",
+          "items"
+        ],
+        "properties": {
+          "firm_id": {"type": "string"},
+          "as_of": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "page": {"type": "integer"},
+          "page_size": {"type": "integer"},
+          "total": {"type": "integer"},
+          "total_pages": {"type": "integer"},
+          "has_next": {"type": "boolean"},
+          "has_prev": {"type": "boolean"},
+          "ordinary_count": {"type": "integer"},
+          "deferred_count": {"type": "integer"},
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "firm_id",
+                "user_id",
+                "amount_kopeks",
+                "totals",
+                "dispatcher_attribution",
+                "deferred_state",
+                "employee_salary_snapshot",
+                "fines",
+                "rewards",
+                "cash",
+                "shifts",
+                "deals",
+                "withholds"
+              ],
+              "properties": {
+                "firm_id": {"type": "string"},
+                "user_id": {"type": "string"},
+                "user_name": {"type": ["string", "null"]},
+                "role_type": {"type": ["string", "null"]},
+                "amount_kopeks": {"type": "integer"},
+                "period_started_at": {"type": ["string", "null"]},
+                "period_ended_at": {"type": ["string", "null"]},
+                "source_last_accrual_event_id": {"type": ["string", "null"]},
+                "source_last_accrual_created_at": {"type": ["string", "null"]},
+                "totals": {
+                  "type": "object",
+                  "required": [
+                    "salary_total_kopeks",
+                    "rewards_total_kopeks",
+                    "deals_total_kopeks",
+                    "shifts_total_kopeks",
+                    "fines_total_kopeks",
+                    "rewards_fines_paid_kopeks",
+                    "withholds_total_kopeks",
+                    "events_total_count"
+                  ],
+                  "properties": {
+                    "salary_total_kopeks": {"type": "integer"},
+                    "rewards_total_kopeks": {"type": "integer"},
+                    "deals_total_kopeks": {"type": "integer"},
+                    "shifts_total_kopeks": {"type": "integer"},
+                    "fines_total_kopeks": {"type": "integer"},
+                    "rewards_fines_paid_kopeks": {"type": "integer"},
+                    "withholds_total_kopeks": {"type": "integer"},
+                    "events_total_count": {"type": "integer"}
+                  }
+                },
+                "dispatcher_attribution": {
+                  "type": "object",
+                  "required": ["dispatcher_id", "percent_snapshot", "created_at", "updated_at"],
+                  "properties": {
+                    "dispatcher_id": {"type": ["string", "null"]},
+                    "percent_snapshot": {"type": "number"},
+                    "created_at": {"type": ["string", "null"]},
+                    "updated_at": {"type": ["string", "null"]}
+                  }
+                },
+                "deferred_state": {
+                  "type": "object",
+                  "required": ["is_deferred", "deferred_until", "deferred_event_id", "accrual_event_id", "event_at"],
+                  "properties": {
+                    "is_deferred": {"type": "boolean"},
+                    "deferred_until": {"type": ["string", "null"]},
+                    "deferred_event_id": {"type": ["string", "null"]},
+                    "accrual_event_id": {"type": ["string", "null"]},
+                    "event_at": {"type": ["string", "null"]}
+                  }
+                },
+                "employee_salary_snapshot": {
+                  "type": "array",
+                  "items": {"type": "object"}
+                },
+                "fines": {"type": "array", "items": {"type": "object"}},
+                "rewards": {"type": "array", "items": {"type": "object"}},
+                "cash": {"type": "array", "items": {"type": "object"}},
+                "shifts": {"type": "array", "items": {"type": "object"}},
+                "deals": {"type": "array", "items": {"type": "object"}},
+                "withholds": {"type": "array", "items": {"type": "object"}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/payroll/history": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "action", "firm_id"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "action": {"type": "string", "const": "payroll_history"},
+          "firm_id": {"type": "string", "minLength": 1},
+          "date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+          "year": {"type": "integer", "minimum": 2020, "maximum": 2100},
+          "month": {"type": "integer", "minimum": 1, "maximum": 12},
+          "page": {"type": "integer", "minimum": 0},
+          "page_size": {"type": "integer", "minimum": 1, "maximum": 100}
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "mode",
+          "selected_date",
+          "period_started_at",
+          "period_ended_at",
+          "page",
+          "page_size",
+          "total",
+          "total_pages",
+          "has_next",
+          "has_prev",
+          "items"
+        ],
+        "properties": {
+          "firm_id": {"type": "string"},
+          "mode": {"type": "string", "enum": ["day", "month"]},
+          "selected_date": {"type": ["string", "null"]},
+          "period_started_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "period_ended_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "page": {"type": "integer"},
+          "page_size": {"type": "integer"},
+          "total": {"type": "integer"},
+          "total_pages": {"type": "integer"},
+          "has_next": {"type": "boolean"},
+          "has_prev": {"type": "boolean"},
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "accrual_event_id",
+                "status",
+                "status_event_id",
+                "user_id",
+                "user_name",
+                "amount_kopeks",
+                "event_at",
+                "paid_at",
+                "deferred_until",
+                "accrual_snapshot"
+              ],
+              "properties": {
+                "accrual_event_id": {"type": "string"},
+                "status": {"type": "string", "enum": ["accrued", "deferred", "paid"]},
+                "status_event_id": {"type": ["string", "null"]},
+                "user_id": {"type": "string"},
+                "user_name": {"type": "string"},
+                "amount_kopeks": {"type": "integer"},
+                "event_at": {"type": "string"},
+                "paid_at": {"type": ["string", "null"]},
+                "deferred_until": {"type": ["string", "null"]},
+                "accrual_snapshot": {"type": "object"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/dispatcher-settlement/queue": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract", "action", "firm_id", "attribution_type"],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": ["request_schema_hash", "response_schema_hash"],
+            "properties": {
+              "request_schema_hash": {"type": "string"},
+              "response_schema_hash": {"type": "string"}
+            }
+          },
+          "action": {"type": "string", "const": "dispatcher_settlement_queue"},
+          "firm_id": {"type": "string", "minLength": 1},
+          "dispatcher_id": {"type": "string", "minLength": 1},
+          "attribution_type": {"type": "string", "enum": ["dispatcher", "nominal"]},
+          "as_of": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "page": {"type": "integer", "minimum": 0},
+          "page_size": {"type": "integer", "minimum": 1, "maximum": 100}
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"attribution_type": {"const": "dispatcher"}}},
+            "then": {"required": ["dispatcher_id"]}
+          }
+        ]
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "dispatcher_id",
+          "dispatcher_name",
+          "attribution_type",
+          "as_of",
+          "period_started_at",
+          "period_ended_at",
+          "source_last_settlement_event_id",
+          "source_last_settlement_created_at",
+          "page",
+          "page_size",
+          "total",
+          "total_pages",
+          "has_next",
+          "has_prev",
+          "totals",
+          "items"
+        ],
+        "properties": {
+          "firm_id": {"type": "string"},
+          "dispatcher_id": {"type": ["string", "null"]},
+          "dispatcher_name": {"type": ["string", "null"]},
+          "attribution_type": {"type": "string", "enum": ["dispatcher", "nominal"]},
+          "as_of": {"type": "string"},
+          "period_started_at": {"type": ["string", "null"]},
+          "period_ended_at": {"type": "string"},
+          "source_last_settlement_event_id": {"type": ["string", "null"]},
+          "source_last_settlement_created_at": {"type": ["string", "null"]},
+          "page": {"type": "integer"},
+          "page_size": {"type": "integer"},
+          "total": {"type": "integer"},
+          "total_pages": {"type": "integer"},
+          "has_next": {"type": "boolean"},
+          "has_prev": {"type": "boolean"},
+          "totals": {
+            "type": "object",
+            "required": [
+              "current_period_due_kopeks",
+              "previous_debt_kopeks",
+              "amount_due_kopeks",
+              "workers_count",
+              "shifts_count"
+            ],
+            "properties": {
+              "current_period_due_kopeks": {"type": "integer"},
+              "previous_debt_kopeks": {"type": "integer"},
+              "amount_due_kopeks": {"type": "integer"},
+              "workers_count": {"type": "integer"},
+              "shifts_count": {"type": "integer"}
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "worker_user_id",
+                "worker_name",
+                "dispatcher_id",
+                "dispatcher_name",
+                "attribution_type",
+                "percent_snapshot",
+                "current_period_due_kopeks",
+                "previous_debt_kopeks",
+                "amount_due_kopeks",
+                "shifts",
+                "previous_debts"
+              ],
+              "properties": {
+                "worker_user_id": {"type": "string"},
+                "worker_name": {"type": "string"},
+                "dispatcher_id": {"type": ["string", "null"]},
+                "dispatcher_name": {"type": ["string", "null"]},
+                "attribution_type": {"type": "string", "enum": ["dispatcher", "nominal"]},
+                "percent_snapshot": {"type": "number"},
+                "current_period_due_kopeks": {"type": "integer"},
+                "previous_debt_kopeks": {"type": "integer"},
+                "amount_due_kopeks": {"type": "integer"},
+                "shifts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "shift_event_id",
+                      "created_at",
+                      "dispatcher_id",
+                      "dispatcher_name",
+                      "attribution_type",
+                      "gross_amount_kopeks",
+                      "percent_snapshot",
+                      "withheld_amount_kopeks"
+                    ],
+                    "properties": {
+                      "shift_event_id": {"type": "string"},
+                      "shift_id": {"type": ["string", "null"]},
+                      "object_id": {"type": ["string", "null"]},
+                      "object_name": {"type": ["string", "null"]},
+                      "created_at": {"type": "string"},
+                      "event_at": {"type": ["string", "null"]},
+                      "dispatcher_id": {"type": ["string", "null"]},
+                      "dispatcher_name": {"type": ["string", "null"]},
+                      "attribution_type": {"type": "string", "enum": ["dispatcher", "nominal"]},
+                      "gross_amount_kopeks": {"type": "integer"},
+                      "percent_snapshot": {"type": "number"},
+                      "withheld_amount_kopeks": {"type": "integer"}
+                    }
+                  }
+                },
+                "previous_debts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["source_settlement_event_id", "remaining_kopeks"],
+                    "properties": {
+                      "source_settlement_event_id": {"type": "string"},
+                      "source_event_at": {"type": ["string", "null"]},
+                      "source_created_at": {"type": ["string", "null"]},
+                      "remaining_kopeks": {"type": "integer"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-year-total": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "dispatcher_withhold_accrual_year_total"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "dispatcher_id",
+          "year",
+          "withhold_accrual_total_kopeks",
+          "events_count",
+          "attributions_count"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "dispatcher_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "withhold_accrual_total_kopeks": {
+            "type": "integer"
+          },
+          "events_count": {
+            "type": "integer"
+          },
+          "attributions_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-year-percent-avg": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "dispatcher_withhold_accrual_year_percent_avg"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "dispatcher_id",
+          "year",
+          "percent_avg",
+          "attributions_count",
+          "workers_with_events_count"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "dispatcher_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "percent_avg": {
+            "type": "number"
+          },
+          "attributions_count": {
+            "type": "integer"
+          },
+          "workers_with_events_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-month-total": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "dispatcher_withhold_accrual_month_total"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "dispatcher_id",
+          "year",
+          "month",
+          "withhold_accrual_total_kopeks",
+          "events_count",
+          "attributions_count"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "dispatcher_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "withhold_accrual_total_kopeks": {
+            "type": "integer"
+          },
+          "events_count": {
+            "type": "integer"
+          },
+          "attributions_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-month-percent-avg": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "dispatcher_withhold_accrual_month_percent_avg"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "dispatcher_id",
+          "year",
+          "month",
+          "percent_avg",
+          "attributions_count",
+          "workers_with_events_count"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "dispatcher_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "percent_avg": {
+            "type": "number"
+          },
+          "attributions_count": {
+            "type": "integer"
+          },
+          "workers_with_events_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-user-total": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "dispatcher_withhold_accrual_user_total"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "dispatcher_id",
+          "user_id",
+          "percent_snapshot",
+          "withhold_accrual_total_kopeks",
+          "events_count"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "dispatcher_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "percent_snapshot": {
+            "type": "number"
+          },
+          "withhold_accrual_total_kopeks": {
+            "type": "integer"
+          },
+          "events_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/dispatcher-withhold-accrual-user-total-all-firms": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "user_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "dispatcher_withhold_accrual_user_total_all_firms"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "dispatcher_id",
+          "user_id",
+          "percent_avg",
+          "withhold_accrual_total_kopeks",
+          "events_count",
+          "firms_count"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "dispatcher_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "percent_avg": {
+            "type": "number"
+          },
+          "withhold_accrual_total_kopeks": {
+            "type": "integer"
+          },
+          "events_count": {
+            "type": "integer"
+          },
+          "firms_count": {
+            "type": "integer"
+          },
+          "firms_with_events_count": {
+            "type": "integer"
+          },
+          "firms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "firm_id",
+                "percent_snapshot",
+                "withhold_accrual_total_kopeks",
+                "events_count"
+              ],
+              "properties": {
+                "firm_id": {
+                  "type": "string"
+                },
+                "employee_status": {
+                  "type": "string"
+                },
+                "percent_snapshot": {
+                  "type": "number"
+                },
+                "withhold_accrual_total_kopeks": {
+                  "type": "integer"
+                },
+                "events_count": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/worker-month-work": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "worker_month_work"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "user_id",
+          "year",
+          "month",
+          "shifts",
+          "deals"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "shifts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "state"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "deals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "state"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/worker-day-work-all-firms": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "date"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "worker_day_work_all_firms"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "user_id",
+          "date",
+          "firms_count",
+          "firms_with_events_count",
+          "shifts",
+          "deals",
+          "firms"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "firms_count": {
+            "type": "integer"
+          },
+          "firms_with_events_count": {
+            "type": "integer"
+          },
+          "shifts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "firm_id",
+                "firm_name",
+                "state"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "firm_id": {
+                  "type": "string"
+                },
+                "firm_name": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "deals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "firm_id",
+                "firm_name",
+                "state"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "firm_id": {
+                  "type": "string"
+                },
+                "firm_name": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "firms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "firm_id",
+                "firm_name",
+                "role_type",
+                "employee_status",
+                "shifts",
+                "deals"
+              ],
+              "properties": {
+                "firm_id": {
+                  "type": "string"
+                },
+                "firm_name": {
+                  "type": "string"
+                },
+                "role_type": {
+                  "type": "string"
+                },
+                "employee_status": {
+                  "type": "string"
+                },
+                "shifts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "event_id",
+                      "firm_id",
+                      "firm_name",
+                      "state"
+                    ],
+                    "properties": {
+                      "event_id": {
+                        "type": "string"
+                      },
+                      "firm_id": {
+                        "type": "string"
+                      },
+                      "firm_name": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "deals": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "event_id",
+                      "firm_id",
+                      "firm_name",
+                      "state"
+                    ],
+                    "properties": {
+                      "event_id": {
+                        "type": "string"
+                      },
+                      "firm_id": {
+                        "type": "string"
+                      },
+                      "firm_name": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/worker-month-work-all-firms": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "worker_month_work_all_firms"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          },
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "user_id",
+          "year",
+          "month",
+          "firms_count",
+          "firms_with_events_count",
+          "shifts",
+          "deals",
+          "firms"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "firms_count": {
+            "type": "integer"
+          },
+          "firms_with_events_count": {
+            "type": "integer"
+          },
+          "shifts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "firm_id",
+                "firm_name",
+                "state"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "firm_id": {
+                  "type": "string"
+                },
+                "firm_name": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "deals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "firm_id",
+                "firm_name",
+                "state"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "firm_id": {
+                  "type": "string"
+                },
+                "firm_name": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "firms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "firm_id",
+                "firm_name",
+                "role_type",
+                "employee_status",
+                "shifts",
+                "deals"
+              ],
+              "properties": {
+                "firm_id": {
+                  "type": "string"
+                },
+                "firm_name": {
+                  "type": "string"
+                },
+                "role_type": {
+                  "type": "string"
+                },
+                "employee_status": {
+                  "type": "string"
+                },
+                "shifts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "event_id",
+                      "firm_id",
+                      "firm_name",
+                      "state"
+                    ],
+                    "properties": {
+                      "event_id": {
+                        "type": "string"
+                      },
+                      "firm_id": {
+                        "type": "string"
+                      },
+                      "firm_name": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "deals": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "event_id",
+                      "firm_id",
+                      "firm_name",
+                      "state"
+                    ],
+                    "properties": {
+                      "event_id": {
+                        "type": "string"
+                      },
+                      "firm_id": {
+                        "type": "string"
+                      },
+                      "firm_name": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/worker-fines-year-total": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "worker_fines_year_total"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "user_id",
+          "year",
+          "fine_total_kopeks",
+          "events_count"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "fine_total_kopeks": {
+            "type": "integer"
+          },
+          "events_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/worker-fines-month-list": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "worker_fines_month_list"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "user_id",
+          "year",
+          "month",
+          "fines"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "fines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "state"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/worker-fines-year-list-excluding-month": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id",
+          "month",
+          "year"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "worker_fines_year_list_excluding_month"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "user_id",
+          "year",
+          "exclude_month",
+          "fines"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "exclude_month": {
+            "type": "integer"
+          },
+          "fines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "state"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/worker-fines-totals-all-firms": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "worker_fines_totals_all_firms"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "user_id",
+          "reference_year",
+          "reference_month",
+          "totals",
+          "firms_count",
+          "firms_with_fines_count",
+          "firms"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "reference_year": {
+            "type": "integer"
+          },
+          "reference_month": {
+            "type": "integer"
+          },
+          "totals": {
+            "type": "object",
+            "required": [
+              "all_time_kopeks",
+              "year_kopeks",
+              "month_kopeks",
+              "all_time_events_count",
+              "year_events_count",
+              "month_events_count"
+            ],
+            "properties": {
+              "all_time_kopeks": {
+                "type": "integer"
+              },
+              "year_kopeks": {
+                "type": "integer"
+              },
+              "month_kopeks": {
+                "type": "integer"
+              },
+              "all_time_events_count": {
+                "type": "integer"
+              },
+              "year_events_count": {
+                "type": "integer"
+              },
+              "month_events_count": {
+                "type": "integer"
+              }
+            }
+          },
+          "firms_count": {
+            "type": "integer"
+          },
+          "firms_with_fines_count": {
+            "type": "integer"
+          },
+          "firms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "firm_id",
+                "firm_name",
+                "employee_status",
+                "totals"
+              ],
+              "properties": {
+                "firm_id": {
+                  "type": "string"
+                },
+                "firm_name": {
+                  "type": "string"
+                },
+                "employee_status": {
+                  "type": "string"
+                },
+                "totals": {
+                  "type": "object",
+                  "required": [
+                    "all_time_kopeks",
+                    "year_kopeks",
+                    "month_kopeks",
+                    "all_time_events_count",
+                    "year_events_count",
+                    "month_events_count"
+                  ],
+                  "properties": {
+                    "all_time_kopeks": {
+                      "type": "integer"
+                    },
+                    "year_kopeks": {
+                      "type": "integer"
+                    },
+                    "month_kopeks": {
+                      "type": "integer"
+                    },
+                    "all_time_events_count": {
+                      "type": "integer"
+                    },
+                    "year_events_count": {
+                      "type": "integer"
+                    },
+                    "month_events_count": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/worker-fines-list-all-firms": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "worker_fines_list_all_firms"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "user_id",
+          "page",
+          "page_size",
+          "total",
+          "has_more",
+          "fines"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "month": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "fines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "event_type",
+                "created_at",
+                "amount_kopeks",
+                "theme",
+                "message",
+                "state",
+                "firm",
+                "dispute"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "amount_kopeks": {
+                  "type": "integer"
+                },
+                "theme": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "object"
+                },
+                "firm": {
+                  "type": "object",
+                  "required": [
+                    "firm_id",
+                    "firm_name",
+                    "employee_status"
+                  ],
+                  "properties": {
+                    "firm_id": {
+                      "type": "string"
+                    },
+                    "firm_name": {
+                      "type": "string"
+                    },
+                    "employee_status": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "object_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "object_id": {
+                      "type": "string"
+                    },
+                    "object_name": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "address_json": {
+                      "type": [
+                        "object",
+                        "array",
+                        "string",
+                        "number",
+                        "boolean",
+                        "null"
+                      ]
+                    }
+                  }
+                },
+                "dispute": {
+                  "type": "object",
+                  "required": [
+                    "has_dispute",
+                    "disputes_count",
+                    "latest_dispute"
+                  ],
+                  "properties": {
+                    "has_dispute": {
+                      "type": "boolean"
+                    },
+                    "disputes_count": {
+                      "type": "integer"
+                    },
+                    "latest_dispute": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "appeal_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "user_id": {
+                          "type": "string"
+                        },
+                        "object_id": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "created_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                        },
+                        "updated_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/firms/{firm_id}/analytics/worker-absences-list-all-firms": {
+      "method": "POST",
+      "request_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "action",
+          "firm_id"
+        ],
+        "properties": {
+          "contract": {
+            "type": "object",
+            "required": [
+              "request_schema_hash",
+              "response_schema_hash"
+            ],
+            "properties": {
+              "request_schema_hash": {
+                "type": "string"
+              },
+              "response_schema_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "worker_absences_list_all_firms"
+          },
+          "firm_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2020,
+            "maximum": 2100
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "firm_id",
+          "user_id",
+          "page",
+          "page_size",
+          "total",
+          "has_more",
+          "absences"
+        ],
+        "properties": {
+          "firm_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "month": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "absences": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "event_type",
+                "created_at",
+                "metadata",
+                "firm",
+                "dispute"
+              ],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "metadata": {
+                  "type": "object"
+                },
+                "state": {
+                  "type": "object"
+                },
+                "firm": {
+                  "type": "object",
+                  "required": [
+                    "firm_id",
+                    "firm_name",
+                    "employee_status"
+                  ],
+                  "properties": {
+                    "firm_id": {
+                      "type": "string"
+                    },
+                    "firm_name": {
+                      "type": "string"
+                    },
+                    "employee_status": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "object_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_address": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "object_id": {
+                      "type": "string"
+                    },
+                    "object_name": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "address_json": {
+                      "type": [
+                        "object",
+                        "array",
+                        "string",
+                        "number",
+                        "boolean",
+                        "null"
+                      ]
+                    }
+                  }
+                },
+                "shift_start_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "shift_end_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "appeal_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "dispute_appeal_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "dispute": {
+                  "type": "object",
+                  "required": [
+                    "has_dispute",
+                    "disputes_count",
+                    "latest_dispute"
+                  ],
+                  "properties": {
+                    "has_dispute": {
+                      "type": "boolean"
+                    },
+                    "disputes_count": {
+                      "type": "integer"
+                    },
+                    "latest_dispute": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "appeal_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "is_closed": {
+                          "type": "boolean"
+                        },
+                        "user_id": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "object_id": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "source_type": {
+                          "type": "string",
+                          "enum": [
+                            "absence"
+                          ]
+                        },
+                        "source_event_id": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                        },
+                        "updated_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

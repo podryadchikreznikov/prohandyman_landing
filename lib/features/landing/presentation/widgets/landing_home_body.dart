@@ -4,9 +4,6 @@ import 'package:prohandyman_landing/features/landing/presentation/widgets/callba
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_hero_carousel.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_how_we_work.dart';
 import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_repair_categories.dart';
-import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_service_center_section.dart';
-import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_why_us_benefits.dart';
-import 'package:prohandyman_landing/features/landing/presentation/widgets/landing_partners_section.dart';
 import 'package:prohandyman_landing/presentation/widgets/tilt_wrapper.dart';
 
 /// Body content of the landing page (without its own scrolling).
@@ -33,14 +30,6 @@ class LandingHomeBody extends StatelessWidget {
         ),
         const SizedBox(height: 64),
         const LandingHowWeWork(),
-        const SizedBox(height: 64),
-        LandingServiceCenterSection(
-          tiltPointerController: tiltPointerController,
-        ),
-        const SizedBox(height: 64),
-        const LandingWhyUsBenefitsSection(),
-        const SizedBox(height: 64),
-        const LandingPartnersSection(),
         const SizedBox(height: 64),
         LandingCallbackRequestSection(
           tiltPointerController: tiltPointerController,

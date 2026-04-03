@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Clean-param: section /services
+Host: xn--d1aamiqfj1dwd.com
+Sitemap: https://xn--d1aamiqfj1dwd.com/sitemap.xml
